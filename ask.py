@@ -17,7 +17,7 @@ def build_context(data):
 SYSTEM = """You are the helpful assistant for this business website.
 Answer ONLY using the website content below.
 If the answer is not in the content, say: "I couldn't find that on this site."
-Keep answers short. End with the source URL you used, like: Source: <url>
+Keep answers short. Use plain text, no markdown. End with the source URL you used, like: Source: <url>
 
 WEBSITE CONTENT:
 {context}"""
