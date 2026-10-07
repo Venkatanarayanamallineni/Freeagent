@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from crawler import crawl
 from ask import ask
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"],
@@ -48,4 +49,7 @@ def chat(req: ChatReq):
 def site_info(site_id: str):
     data = load_site(site_id)
     return {"site": data["site"], "logo": data["logo"]}
+@app.get("/")
+def home():
+    return RedirectResponse("/static/setup.html")
 app.mount("/static", StaticFiles(directory="static"), name="static")
