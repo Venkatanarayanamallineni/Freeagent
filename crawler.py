@@ -1,9 +1,18 @@
-import json, os, sys
+import io, json, os, sys
 from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
+from pypdf import PdfReader
 
 MAX_PAGES = 30
+
+def pdf_text(content):
+    try:
+        reader = PdfReader(io.BytesIO(content))
+        return " ".join((p.extract_text() or "") for p in reader.pages)
+    except Exception as e:
+        print("pdf fail", e)
+        return ""
 
 def crawl(start_url):
     domain = urlparse(start_url).netloc
@@ -16,11 +25,20 @@ def crawl(start_url):
             continue
         seen.add(url)
         try:
-            r = requests.get(url, timeout=10, headers={"User-Agent": "FreeAgentBot"})
-            if "text/html" not in r.headers.get("Content-Type", ""):
-                continue
+            r = requests.get(url, timeout=15, headers={"User-Agent": "FreeAgentBot"})
         except Exception as e:
             print("skip", url, e)
+            continue
+        ctype = r.headers.get("Content-Type", "")
+
+        if "pdf" in ctype or url.lower().endswith(".pdf"):
+            text = " ".join(pdf_text(r.content).split())
+            if text:
+                pages.append({"url": url, "title": "PDF: " + url.split("/")[-1], "text": text})
+                print("got pdf", url)
+            continue
+
+        if "text/html" not in ctype:
             continue
 
         soup = BeautifulSoup(r.text, "html.parser")
@@ -32,7 +50,11 @@ def crawl(start_url):
 
         for a in soup.find_all("a", href=True):
             link = urljoin(url, a["href"]).split("#")[0]
-            if urlparse(link).netloc == domain and link not in seen:
+            if link in seen:
+                continue
+            if link.lower().endswith(".pdf"):
+                to_visit.insert(0, link)  # PDFs first, often menus/price lists
+            elif urlparse(link).netloc == domain:
                 to_visit.append(link)
 
         for tag in soup(["script", "style", "noscript"]):

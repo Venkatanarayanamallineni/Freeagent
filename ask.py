@@ -6,7 +6,7 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("NEBIUS_API_KEY"),
                 base_url=os.getenv("NEBIUS_BASE_URL"))
 MODEL = os.getenv("MODEL_ID")
-MAX_CHARS_PER_PAGE = 3000
+MAX_CHARS_PER_PAGE = 8000
 
 def build_context(data):
     parts = []
@@ -14,10 +14,14 @@ def build_context(data):
         parts.append(f"URL: {p['url']}\nTITLE: {p['title']}\nTEXT: {p['text'][:MAX_CHARS_PER_PAGE]}")
     return "\n\n---\n\n".join(parts)
 
+
+
 SYSTEM = """You are the helpful assistant for this business website.
 Answer ONLY using the website content below.
-If the answer is not in the content, say: "I couldn't find that on this site."
-Keep answers short. Use plain text, no markdown. End with the source URL you used, like: Source: <url>
+Keep answers short. Use plain text, no markdown.
+Always name the exact item when giving a price. If several items match, list them with their prices.
+End with the source URL you used, like: Source: <url>
+If the answer is not in the content, reply only: "I couldn't find that on this site." with no source.
 
 WEBSITE CONTENT:
 {context}"""

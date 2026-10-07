@@ -16,11 +16,12 @@ def site_id_from(url):
     return urlparse(url).netloc.replace(".", "_")
 
 def load_site(site_id):
-    path = f"data/{site_id}.json"
-    if not os.path.exists(path):
-        raise HTTPException(404, "Site not set up yet")
-    with open(path, encoding="utf-8") as f:
-        return json.load(f)
+    for folder in ["data", "demo_data"]:
+        path = f"{folder}/{site_id}.json"
+        if os.path.exists(path):
+            with open(path, encoding="utf-8") as f:
+                return json.load(f)
+    raise HTTPException(404, "Site not set up yet")
 
 class SetupReq(BaseModel):
     url: str
