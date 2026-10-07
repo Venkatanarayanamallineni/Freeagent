@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>FreeAgent Setup</title></head>
+<body style="font-family:sans-serif;max-width:640px;margin:40px auto;padding:0 16px">
+  <h1>Add a chat assistant to your website</h1>
+  <p>Paste your website link. We read your site and give you one line of code.</p>
+  <input id="url" placeholder="https://yourbusiness.com" style="width:70%;padding:10px;font-size:16px">
+  <button id="go" style="padding:10px 16px;font-size:16px">Set up</button>
+  <p id="status"></p>
+  <div id="result" style="display:none">
+    <p>Paste this into your site, before <code>&lt;/body&gt;</code>:</p>
+    <pre id="snippet" style="background:#f1f1f1;padding:12px;white-space:pre-wrap"></pre>
+    <p><a id="try" target="_blank">Try it now →</a></p>
+  </div>
+<script>
+document.getElementById("go").onclick = async () => {
+  const url = document.getElementById("url").value.trim();
+  const status = document.getElementById("status");
+  if (!url.startsWith("http")) { status.textContent = "Link must start with http:// or https://"; return; }
+  status.textContent = "Reading your site... (can take up to a minute)";
+  document.getElementById("result").style.display = "none";
+  try {
+    const r = await fetch("/setup", { method: "POST",
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) });
+    const d = await r.json();
+    if (!r.ok || !d.pages) { status.textContent = "Couldn't read that site."; return; }
+    status.textContent = `Done. Read ${d.pages} pages.`;
+    document.getElementById("snippet").textContent =
+      `<script src="${location.origin}/static/widget.js" data-site="${d.site_id}"><\/script>`;
+    document.getElementById("try").href = `/static/preview.html?site=${d.site_id}`;
+    document.getElementById("result").style.display = "block";
+  } catch (e) { status.textContent = "Server error. Try again."; }
+};
+</script>
+</body>
+</html>
