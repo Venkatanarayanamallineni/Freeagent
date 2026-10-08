@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from pypdf import PdfReader
 
-MAX_PAGES = 30
+MAX_PAGES = 50
 
 def pdf_text(content):
     try:
@@ -15,7 +15,7 @@ def pdf_text(content):
         return ""
 
 def crawl(start_url):
-    domain = urlparse(start_url).netloc
+    domain = urlparse(start_url).netloc.replace("www.", "")
     to_visit, seen, pages = [start_url], set(), []
     logo = None
 
@@ -43,21 +43,26 @@ def crawl(start_url):
 
         soup = BeautifulSoup(r.text, "html.parser")
 
+        page_title = soup.title.string if soup.title and soup.title.string else ""
+        if r.status_code in (403, 429, 503) or "Just a moment" in page_title:
+            print("blocked", url)
+            continue
+
         if logo is None:
             icon = soup.find("meta", property="og:image") or soup.find("link", rel="icon")
             if icon:
                 logo = urljoin(url, icon.get("content") or icon.get("href"))
 
         for a in soup.find_all("a", href=True):
-            link = urljoin(url, a["href"]).split("#")[0]
+            link = urljoin(r.url, a["href"]).split("#")[0]
             if link in seen:
                 continue
             if link.lower().endswith(".pdf"):
                 to_visit.insert(0, link)  # PDFs first, often menus/price lists
-            elif urlparse(link).netloc == domain:
+            elif urlparse(link).netloc.replace("www.", "") == domain:
                 to_visit.append(link)
 
-        for tag in soup(["script", "style", "noscript"]):
+        for tag in soup(["script", "style", "noscript", "nav", "footer", "header"]):
             tag.decompose()
         title = soup.title.string.strip() if soup.title and soup.title.string else url
         text = " ".join(soup.get_text(" ").split())

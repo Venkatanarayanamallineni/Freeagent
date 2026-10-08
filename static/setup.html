@@ -23,7 +23,7 @@ document.getElementById("go").onclick = async () => {
     const r = await fetch("/setup", { method: "POST",
       headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) });
     const d = await r.json();
-    if (!r.ok || !d.pages) { status.textContent = "Couldn't read that site."; return; }
+    if (!r.ok || !d.pages) { status.textContent = d.detail || "Couldn't read that site."; return; }
     status.textContent = `Done. Read ${d.pages} pages.`;
     document.getElementById("snippet").textContent =
       `<script src="${location.origin}/static/widget.js" data-site="${d.site_id}"><\/script>`;

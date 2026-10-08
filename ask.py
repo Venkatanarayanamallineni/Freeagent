@@ -6,12 +6,19 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("NEBIUS_API_KEY"),
                 base_url=os.getenv("NEBIUS_BASE_URL"))
 MODEL = os.getenv("MODEL_ID")
-MAX_CHARS_PER_PAGE = 8000
+
+
+MAX_TOTAL_CHARS = 250000
 
 def build_context(data):
-    parts = []
-    for p in data["pages"]:
-        parts.append(f"URL: {p['url']}\nTITLE: {p['title']}\nTEXT: {p['text'][:MAX_CHARS_PER_PAGE]}")
+    pages = sorted(data["pages"], key=lambda p: -p["text"].count("$"))
+    parts, total = [], 0
+    for p in pages:
+        chunk = f"URL: {p['url']}\nTITLE: {p['title']}\nTEXT: {p['text'][:15000]}"
+        if total + len(chunk) > MAX_TOTAL_CHARS:
+            continue
+        parts.append(chunk)
+        total += len(chunk)
     return "\n\n---\n\n".join(parts)
 
 
@@ -35,8 +42,9 @@ When something is missing:
   Example: "No laptops here, unless you count our pancakes as a flat, round device. Want to see the breakfast menu?"
 - If it's info that may exist but isn't on the site (parking, allergies, stock): say it's not on the site and give the contact info from the site if available. No source.
 
-Style: plain text, no markdown, max 6 short lines.
-When you used site content, end with: Source: <url>
+Style: plain text. For lists, start each line with "- ". Max 6 short lines.
+Put exactly ONE source at the very end, like: Source: <url> using the most specific page. Never put URLs anywhere else.
+
 
 WEBSITE CONTENT:
 {context}"""
