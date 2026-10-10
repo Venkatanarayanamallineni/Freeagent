@@ -15,7 +15,7 @@
   #fa-bubble::before,#fa-bubble::after{content:"";position:absolute;border-radius:50%;z-index:-1;
     background:conic-gradient(var(--fa-brand),color-mix(in srgb,var(--fa-brand) 25%,#fff),var(--fa-brand));
     animation:fa-spin 4s linear infinite}
-  #fa-bubble::before{inset:-4px;filter:blur(10px);opacity:.55}
+  #fa-bubble::before{inset:-3px;filter:blur(6px);opacity:.3}
   #fa-bubble::after{inset:0}
   @keyframes fa-spin{to{transform:rotate(360deg)}}
   .fa-logo{width:100%;height:100%;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:24px}

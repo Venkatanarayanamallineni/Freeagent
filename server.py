@@ -89,8 +89,10 @@ def logo_colors(url):
 @app.get("/site/{site_id}")
 def site_info(site_id: str):
     data = load_site(site_id)
-    name = data["pages"][0]["title"] if data["pages"] else data["site"]
-    name = re.split(r"\s[|\-–]\s", name)[0][:40]
+    name = data.get("name") or (data["pages"][0]["title"] if data["pages"] else "")
+    name = re.split(r"\s[|\-–]\s", name)[0][:40].strip()
+    if not name or name.lower() in ("home", "welcome", "index", "homepage"):
+        name = urlparse(data["site"]).netloc.replace("www.", "")
     colors = logo_colors(data["logo"]) or {}
     return {"site": data["site"], "logo": data["logo"], "name": name,
             "brand": colors.get("brand", "#1f2328"),
