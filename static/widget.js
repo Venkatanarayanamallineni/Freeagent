@@ -10,22 +10,15 @@
     font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--fa-ink)}
   #fa-root *{box-sizing:border-box}
   #fa-bubble{position:fixed;bottom:24px;right:24px;width:64px;height:64px;border-radius:50%;padding:3px;border:none;
-    background:transparent;cursor:pointer;z-index:2147483000;isolation:isolate;transition:transform .2s}
+    background:var(--fa-brand);box-shadow:0 6px 18px rgba(0,0,0,.22);cursor:pointer;z-index:2147483000;transition:transform .2s}
   #fa-bubble:hover{transform:scale(1.07)}
-  #fa-bubble::before,#fa-bubble::after{content:"";position:absolute;border-radius:50%;z-index:-1;
-    background:conic-gradient(var(--fa-brand),color-mix(in srgb,var(--fa-brand) 25%,#fff),var(--fa-brand));
-    animation:fa-spin 4s linear infinite}
-  #fa-bubble::before{inset:-3px;filter:blur(6px);opacity:.3}
-  #fa-bubble::after{inset:0}
-  @keyframes fa-spin{to{transform:rotate(360deg)}}
   .fa-logo{width:100%;height:100%;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:24px}
   .fa-logo.fa-dark{background:var(--fa-ink)}
   .fa-logo img{width:78%;height:78%;object-fit:contain}
   #fa-panel{position:fixed;bottom:100px;right:24px;width:370px;max-width:calc(100vw - 32px);height:540px;max-height:calc(100vh - 120px);
     display:flex;flex-direction:column;overflow:hidden;border-radius:20px;z-index:2147483000;
-    background:rgba(250,249,247,.80);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
-    border:1px solid color-mix(in srgb,var(--fa-brand) 25%,transparent);
-    box-shadow:0 20px 50px color-mix(in srgb,var(--fa-brand) 30%,transparent),0 4px 12px rgba(0,0,0,.08);
+    background:rgba(250,249,247,.85);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+    border:1px solid var(--fa-line);box-shadow:0 16px 40px rgba(0,0,0,.18);
     opacity:0;transform:translateY(16px) scale(.98);visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s}
   #fa-panel.fa-open{opacity:1;transform:none;visibility:visible}
   #fa-head{display:flex;align-items:center;gap:10px;padding:14px 16px;color:#fff;
@@ -37,22 +30,23 @@
   #fa-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
   .fa-m{max-width:85%;padding:10px 14px;border-radius:16px;word-wrap:break-word;animation:fa-in .25s ease}
   @keyframes fa-in{from{opacity:0;transform:translateY(6px)}}
-  .fa-u{align-self:flex-end;background:var(--fa-brand);color:#fff;border-bottom-right-radius:4px}
-  .fa-b{align-self:flex-start;background:rgba(255,255,255,.9);border:1px solid var(--fa-line);border-bottom-left-radius:4px}
+  .fa-u{align-self:flex-end;background:var(--fa-brand);color:#fff;font-weight:500;border-bottom-right-radius:4px}
+  .fa-b{align-self:flex-start;background:#fff;border:1px solid var(--fa-line);border-bottom-left-radius:4px}
   .fa-m p{margin:0 0 6px}.fa-m p:last-child{margin:0}
   .fa-m ul{margin:4px 0 6px;padding-left:18px}.fa-m li{margin:2px 0}
   .fa-src{display:inline-block;margin-top:8px;font-size:12px;text-decoration:none;border-radius:999px;padding:2px 10px;
-    color:var(--fa-brand);border:1px solid color-mix(in srgb,var(--fa-brand) 35%,transparent)}
-  .fa-src:hover{background:color-mix(in srgb,var(--fa-brand) 10%,transparent)}
+    color:var(--fa-ink);border:1px solid rgba(0,0,0,.18)}
+  .fa-src:hover{background:rgba(0,0,0,.05)}
   .fa-dots span{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:var(--fa-brand);animation:fa-blink 1.2s infinite}
   .fa-dots span:nth-child(2){animation-delay:.2s}.fa-dots span:nth-child(3){animation-delay:.4s}
   @keyframes fa-blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
-  #fa-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--fa-line);background:rgba(255,255,255,.6)}
-  #fa-in{flex:1;border:1px solid var(--fa-line);border-radius:999px;padding:10px 14px;font:inherit;outline:none;background:#fff;color:var(--fa-ink)}
+  #fa-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--fa-line);background:#fff}
+  #fa-in{flex:1;border:1px solid rgba(0,0,0,.15);border-radius:999px;padding:10px 14px;font:inherit;outline:none;background:#fff;color:var(--fa-ink)}
   #fa-in:focus{border-color:var(--fa-brand)}
-  #fa-send{border:none;background:var(--fa-brand);color:#fff;border-radius:999px;padding:0 16px;font:inherit;cursor:pointer}
-  #fa-foot{text-align:center;font-size:11px;color:#8a8f96;padding:0 0 8px;background:rgba(255,255,255,.6)}
-  @media (prefers-reduced-motion:reduce){#fa-bubble::before,#fa-bubble::after,.fa-m{animation:none}}`;
+  #fa-send{border:none;background:var(--fa-brand);color:#fff;font-weight:600;border-radius:999px;padding:0 18px;font:inherit;font-weight:600;cursor:pointer}
+  #fa-send:hover{filter:brightness(1.15)}
+  #fa-foot{text-align:center;font-size:11px;color:#8a8f96;padding:0 0 8px;background:#fff}
+  @media (prefers-reduced-motion:reduce){.fa-m{animation:none}}`;
   document.head.appendChild(style);
 
   const root = document.createElement("div");
@@ -128,7 +122,7 @@
       const r = await fetch(`${API}/chat`, { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ site_id: SITE, question: q, history }) });
       const d = await r.json();
-      const a = d.answer || "Sorry, something went wrong.";
+      const a = d.answer || d.detail || "Sorry, something went wrong.";
       render(wait, a);
       history.push({ role: "user", content: q }, { role: "assistant", content: a });
     } catch (e) { render(wait, "Can't reach the server right now."); }
