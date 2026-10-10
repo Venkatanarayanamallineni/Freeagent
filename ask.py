@@ -39,7 +39,7 @@ OUR INFORMATION:
 def business_name(data):
     name = data.get("name") or (data["pages"][0]["title"] if data["pages"] else "")
     name = re.split(r"\s[|\-–]\s", name)[0][:40].strip()
-    if not name or name.lower() in ("home", "welcome", "index", "homepage"):
+    if not name or name.startswith("http") or name.lower() in ("home", "welcome", "index", "homepage"):
         name = urlparse(data["site"]).netloc.replace("www.", "")
     return name
 

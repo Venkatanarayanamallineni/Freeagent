@@ -187,6 +187,19 @@ def chat(req: ChatReq, request: Request):
         raise HTTPException(502, "The assistant is busy right now. Please try again.")
     return {"answer": answer}
 
+def tagline(data, name):
+    title = data["pages"][0]["title"] if data["pages"] else ""
+    skip = {name.lower(), "home", "welcome", "index", "homepage"}
+    for part in re.split(r"\s[|\-–]\s", title)[1:]:
+        part = part.strip()
+        if 3 < len(part) <= 45 and part.lower() not in skip:
+            return part
+    desc = (data.get("description") or "").strip()
+    first = re.split(r"(?<=[.!?])\s", desc)[0] if desc else ""
+    if 3 < len(first) <= 60:
+        return first
+    return "Happy to help"
+
 
 @app.get("/site/{site_id}")
 def site_info(site_id: str):
@@ -198,6 +211,7 @@ def site_info(site_id: str):
         name = urlparse(data["site"]).netloc.replace("www.", "")
     colors = logo_colors(data["logo"]) or {}
     return {"site": data["site"], "logo": data["logo"], "name": name,
+            "tagline": tagline(data, name),
             "brand": data.get("brand") or colors.get("brand", "#1f2328"),
             "light_logo": colors.get("light_logo", False)}
 

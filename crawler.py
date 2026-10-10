@@ -30,11 +30,11 @@ def find_logo(soup, base):
     for wanted in ("apple-touch-icon", "icon"):
         for link in soup.find_all("link", href=True):
             rels = " ".join(link.get("rel", [])).lower()
-            if wanted in rels:
+            if wanted in rels and not link["href"].startswith("data:"):
                 return urljoin(base, link["href"])
     # 3. last resort: social share image (often a food photo)
     og = soup.find("meta", property="og:image")
-    if og and og.get("content"):
+    if og and og.get("content") and not og["content"].startswith("data:"):
         return urljoin(base, og["content"])
     return None
 
@@ -44,6 +44,7 @@ def crawl(start_url):
     to_visit, seen, pages = [start_url], set(), []
     logo = None
     site_name = None
+    description = None
 
     while to_visit and len(pages) < MAX_PAGES:
         url = to_visit.pop(0).split("#")[0]
@@ -82,6 +83,10 @@ def crawl(start_url):
             if meta and meta.get("content"):
                 site_name = meta["content"].strip()
 
+        if description is None:
+            m = soup.find("meta", attrs={"name": "description"}) or soup.find("meta", property="og:description")
+            description = m["content"].strip() if m and m.get("content") else ""
+
         for a in soup.find_all("a", href=True):
             link = urljoin(r.url, a["href"]).split("#")[0]
             if link in seen:
@@ -98,7 +103,7 @@ def crawl(start_url):
         pages.append({"url": url, "title": title, "text": text})
         print("got", url)
 
-    return {"site": start_url, "name": site_name, "logo": logo, "pages": pages}
+    return {"site": start_url, "name": site_name, "description": description, "logo": logo, "pages": pages}
 
 
 if __name__ == "__main__":

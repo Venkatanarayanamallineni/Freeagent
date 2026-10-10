@@ -55,7 +55,7 @@
     <button id="fa-bubble" aria-label="Open chat"><div class="fa-logo">💬</div></button>
     <div id="fa-panel" role="dialog">
       <div id="fa-head"><div class="fa-logo">💬</div>
-        <div><div id="fa-title">Ask us anything</div><div id="fa-sub">Answers from our website</div></div>
+        <div><div id="fa-title">Ask us anything</div><div id="fa-sub">Here to Help</div></div>
         <button id="fa-close" aria-label="Close">×</button></div>
       <div id="fa-msgs"></div>
       <div id="fa-row"><input id="fa-in" placeholder="Ask a question..."><button id="fa-send">Send</button></div>
@@ -69,6 +69,7 @@
 
   fetch(`${API}/site/${SITE}`).then(r => r.json()).then(d => {
     if (d.name) root.querySelector("#fa-title").textContent = d.name;
+    if (d.tagline) root.querySelector("#fa-sub").textContent = d.tagline;
     if (d.brand) root.style.setProperty("--fa-brand", d.brand);
     if (d.logo) root.querySelectorAll(".fa-logo").forEach(box => {
       const img = new Image();
