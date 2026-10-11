@@ -1,11 +1,21 @@
-import io, json, os, sys
+import io, json, os, re, sys
 from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 from pypdf import PdfReader
 
 MAX_PAGES = 50
+MAX_ACTIONS = 8
 HEADERS = {"User-Agent": "FreeAgentBot"}
+
+# words on a link that mean "book / reserve / order"
+ACTION_TEXT = re.compile(r"\b(book( now| online| an? appointment| a table)?|reserve( now| a table)?|reservations?|"
+                         r"appointments?|schedule( now| online)?|order( online| now| ahead| pickup| delivery)?)\b")
+# booking / ordering services businesses link out to
+ACTION_HOSTS = ("opentable", "resy.com", "toasttab", "calendly", "vagaro", "booksy", "fresha", "squareup",
+                "square.site", "doordash", "ubereats", "grubhub", "mindbody", "setmore", "acuityscheduling",
+                "exploretock", "sevenrooms", "chownow", "slicelife")
+SKIP_HOSTS = ("facebook.", "instagram.", "twitter.", "x.com", "tiktok.", "youtube.", "linkedin.", "pinterest.")
 
 
 def pdf_text(content):
@@ -39,12 +49,36 @@ def find_logo(soup, base):
     return None
 
 
+def action_kind(text, url):
+    both = f"{text} {url}".lower()
+    if re.search(r"order|doordash|ubereats|grubhub|toasttab|chownow|slicelife", both):
+        return "order"
+    if re.search(r"reserv|opentable|resy|tock|sevenrooms|table", both):
+        return "reserve"
+    return "book"
+
+
+def maybe_action(a, link, actions):
+    """Remember links like 'Book now', 'Reserve a table', 'Order online'."""
+    if len(actions) >= MAX_ACTIONS or link in actions:
+        return
+    p = urlparse(link)
+    if p.scheme not in ("http", "https") or any(h in p.netloc for h in SKIP_HOSTS):
+        return
+    text = " ".join(a.get_text(" ", strip=True).split())
+    host_hit = any(h in p.netloc for h in ACTION_HOSTS)
+    text_hit = len(text) <= 40 and ACTION_TEXT.search(text.lower())
+    if host_hit or text_hit:
+        actions[link] = {"url": link, "text": text[:40], "kind": action_kind(text, link)}
+
+
 def crawl(start_url):
     domain = urlparse(start_url).netloc.replace("www.", "")
     to_visit, seen, pages = [start_url], set(), []
     logo = None
     site_name = None
     description = None
+    actions = {}
 
     while to_visit and len(pages) < MAX_PAGES:
         url = to_visit.pop(0).split("#")[0]
@@ -89,6 +123,7 @@ def crawl(start_url):
 
         for a in soup.find_all("a", href=True):
             link = urljoin(r.url, a["href"]).split("#")[0]
+            maybe_action(a, link, actions)
             if link in seen:
                 continue
             if link.lower().endswith(".pdf"):
@@ -103,7 +138,8 @@ def crawl(start_url):
         pages.append({"url": url, "title": title, "text": text})
         print("got", url)
 
-    return {"site": start_url, "name": site_name, "description": description, "logo": logo, "pages": pages}
+    return {"site": start_url, "name": site_name, "description": description, "logo": logo,
+            "actions": list(actions.values()), "pages": pages}
 
 
 if __name__ == "__main__":
@@ -114,3 +150,5 @@ if __name__ == "__main__":
     with open(f"data/{name}.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     print(f"saved {len(data['pages'])} pages to data/{name}.json, logo: {data['logo']}, name: {data['name']}")
+    for act in data["actions"]:
+        print("action:", act["kind"], act["text"], act["url"])

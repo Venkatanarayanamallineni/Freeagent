@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from pydantic import BaseModel
 
-from ask import ask, business_name
+from ask import ask, business_name, detect_style
 from crawler import crawl
 
 app = FastAPI()
@@ -55,6 +55,7 @@ def daily_cap():
 # ---------- helpers ----------
 SITE_ID_OK = re.compile(r"[a-z0-9_\-]{1,100}")
 HEX_OK = re.compile(r"#[0-9a-fA-F]{6}")
+TONE_OK = ("professional", "friendly", "playful")
 
 
 def site_id_from(url):
@@ -83,7 +84,22 @@ def is_public_url(url):
         return False
 
 
+def tagline(data, name):
+    title = data["pages"][0]["title"] if data["pages"] else ""
+    skip = {name.lower(), "home", "welcome", "index", "homepage"}
+    for part in re.split(r"\s[|\-–]\s", title)[1:]:
+        part = part.strip()
+        if 3 < len(part) <= 45 and part.lower() not in skip:
+            return part
+    desc = (data.get("description") or "").strip()
+    first = re.split(r"(?<=[.!?])\s", desc)[0] if desc else ""
+    if 3 < len(first) <= 60:
+        return first
+    return "Happy to help"
+
+
 BRAND_CACHE = {}
+STYLE_CACHE = {}
 
 
 def logo_colors(url):
@@ -130,8 +146,11 @@ def logo_colors(url):
 # ---------- request shapes ----------
 class SetupReq(BaseModel):
     url: str
-    logo: Optional[str] = None   # owner's own logo link (optional)
-    brand: Optional[str] = None  # owner's color like #1a2b3c (optional)
+    logo: Optional[str] = None    # owner's own logo link
+    brand: Optional[str] = None   # owner's color like #1a2b3c
+    tone: Optional[str] = "friendly"
+    effects: bool = True
+    emoji: Optional[str] = None   # owner's own effect emoji
 
 
 class ChatReq(BaseModel):
@@ -147,17 +166,28 @@ def setup(req: SetupReq, request: Request):
     url = req.url.strip()
     if not is_public_url(url):
         raise HTTPException(400, "Please enter a public website link (http or https).")
+    if req.logo and not req.logo.strip().startswith(("http://", "https://")):
+        raise HTTPException(400, "Logo must be an image link (http or https).")
+    if req.brand and not HEX_OK.fullmatch(req.brand.strip()):
+        raise HTTPException(400, "Color must look like #1a2b3c.")
+    if req.emoji and len(req.emoji.strip()) > 4:
+        raise HTTPException(400, "Effect symbol should be one emoji.")
+
     data = crawl(url)
     if not data["pages"]:
         raise HTTPException(400, "Couldn't read this site. It may block automated readers.")
+
     if req.logo:
-        if not req.logo.startswith(("http://", "https://")):
-            raise HTTPException(400, "Logo must be an image link (http or https).")
         data["logo"] = req.logo.strip()
     if req.brand:
-        if not HEX_OK.fullmatch(req.brand.strip()):
-            raise HTTPException(400, "Color must look like #1a2b3c.")
         data["brand"] = req.brand.strip()
+    data["tone"] = req.tone if req.tone in TONE_OK else "friendly"
+    data["effects"] = req.effects
+    style = detect_style(data)
+    data["type"] = style["type"]
+    data["effect"] = {"motion": style["motion"],
+                      "emoji": (req.emoji or "").strip() or style["emoji"]}
+
     sid = site_id_from(url)
     os.makedirs("data", exist_ok=True)
     with open(f"data/{sid}.json", "w", encoding="utf-8") as f:
@@ -187,31 +217,29 @@ def chat(req: ChatReq, request: Request):
         raise HTTPException(502, "The assistant is busy right now. Please try again.")
     return {"answer": answer}
 
-def tagline(data, name):
-    title = data["pages"][0]["title"] if data["pages"] else ""
-    skip = {name.lower(), "home", "welcome", "index", "homepage"}
-    for part in re.split(r"\s[|\-–]\s", title)[1:]:
-        part = part.strip()
-        if 3 < len(part) <= 45 and part.lower() not in skip:
-            return part
-    desc = (data.get("description") or "").strip()
-    first = re.split(r"(?<=[.!?])\s", desc)[0] if desc else ""
-    if 3 < len(first) <= 60:
-        return first
-    return "Happy to help"
-
 
 @app.get("/site/{site_id}")
 def site_info(site_id: str):
     data = load_site(site_id)
     name = business_name(data)
-    name = data.get("name") or (data["pages"][0]["title"] if data["pages"] else "")
-    name = re.split(r"\s[|\-–]\s", name)[0][:40].strip()
-    if not name or name.lower() in ("home", "welcome", "index", "homepage"):
-        name = urlparse(data["site"]).netloc.replace("www.", "")
+
+    effect = data.get("effect")
+    btype = data.get("type")
+    if not effect or not btype:  # older sites set up before effects existed
+        if site_id not in STYLE_CACHE:
+            STYLE_CACHE[site_id] = detect_style(data)
+        st = STYLE_CACHE[site_id]
+        effect = effect or {"motion": st["motion"], "emoji": st["emoji"]}
+        btype = btype or st["type"]
+    if data.get("effects") is False:
+        effect = {}
+
     colors = logo_colors(data["logo"]) or {}
     return {"site": data["site"], "logo": data["logo"], "name": name,
             "tagline": tagline(data, name),
+            "effect": effect,
+            "type": btype,
+            "actions": [{"url": a["url"], "kind": a["kind"]} for a in (data.get("actions") or [])][:8],
             "brand": data.get("brand") or colors.get("brand", "#1f2328"),
             "light_logo": colors.get("light_logo", False)}
 

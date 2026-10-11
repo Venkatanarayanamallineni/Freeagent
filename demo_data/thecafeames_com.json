@@ -1,6 +1,7 @@
 {
   "site": "https://thecafeames.com/",
   "name": "The Cafe",
+  "description": "",
   "logo": "https://thecafeames.com/wp-content/themes/the-cafe/assets/img/cafe-main-logo.png",
   "pages": [
     {
@@ -58,5 +59,12 @@
       "title": "Products Archives - The Cafe",
       "text": "Products Archives - The Cafe Products Showing the single result Default sorting Sort by popularity Sort by latest Sort by price: low to high Sort by price: high to low Gift Card Set Price View Cart Cart Your Cart No products in the cart."
     }
-  ]
+  ],
+  "tone": "friendly",
+  "effects": true,
+  "type": "food",
+  "effect": {
+    "motion": "steam",
+    "emoji": "🥐"
+  }
 }
