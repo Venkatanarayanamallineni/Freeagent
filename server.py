@@ -1,4 +1,4 @@
-import colorsys, io, ipaddress, json, os, re, socket, time
+import colorsys, hashlib, hmac, io, ipaddress, json, os, re, secrets, socket, threading, time, uuid
 from collections import defaultdict, deque
 from typing import Optional
 from urllib.parse import urlparse
@@ -21,6 +21,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"],
 # ---------- limits (protect Nebius credits) ----------
 CHAT_PER_MIN = 15          # per visitor
 SETUP_PER_HOUR = 10        # per visitor
+SETTINGS_PER_HOUR = 40     # per visitor
 CHAT_PER_DAY_TOTAL = 1500  # all visitors combined
 MAX_QUESTION_CHARS = 500
 
@@ -150,7 +151,17 @@ class SetupReq(BaseModel):
     brand: Optional[str] = None   # owner's color like #1a2b3c
     tone: Optional[str] = "friendly"
     effects: bool = True
-    emoji: Optional[str] = None   # owner's own effect emoji
+    emoji: Optional[str] = None   # owner's own signature
+    token: Optional[str] = None   # owner's edit token, to re-read a site they already set up
+
+
+class SettingsReq(BaseModel):
+    token: str
+    logo: Optional[str] = None
+    brand: Optional[str] = None
+    tone: Optional[str] = None
+    effects: Optional[bool] = None
+    emoji: Optional[str] = None
 
 
 class ChatReq(BaseModel):
@@ -160,39 +171,142 @@ class ChatReq(BaseModel):
 
 
 # ---------- routes ----------
-@app.post("/setup")
-def setup(req: SetupReq, request: Request):
-    rate_limit(request, "setup", SETUP_PER_HOUR, 3600)
-    url = req.url.strip()
-    if not is_public_url(url):
-        raise HTTPException(400, "Please enter a public website link (http or https).")
-    if req.logo and not req.logo.strip().startswith(("http://", "https://")):
-        raise HTTPException(400, "Logo must be an image link (http or https).")
-    if req.brand and not HEX_OK.fullmatch(req.brand.strip()):
-        raise HTTPException(400, "Color must look like #1a2b3c.")
-    if req.emoji and len(req.emoji.strip()) > 4:
-        raise HTTPException(400, "Effect symbol should be one emoji.")
+JOBS = {}
+JOB_ID_OK = re.compile(r"[a-f0-9]{32}")
 
-    data = crawl(url)
-    if not data["pages"]:
-        raise HTTPException(400, "Couldn't read this site. It may block automated readers.")
 
-    if req.logo:
-        data["logo"] = req.logo.strip()
-    if req.brand:
-        data["brand"] = req.brand.strip()
-    data["tone"] = req.tone if req.tone in TONE_OK else "friendly"
-    data["effects"] = req.effects
-    style = detect_style(data)
-    data["type"] = style["type"]
-    data["effect"] = {"motion": style["motion"],
-                      "emoji": (req.emoji or "").strip() or style["emoji"]}
+def token_hash(token):
+    return hashlib.sha256(token.encode()).hexdigest()
 
-    sid = site_id_from(url)
+
+def owns(data, token):
+    h = data.get("edit_hash")
+    return bool(h and token and hmac.compare_digest(h, token_hash(token)))
+
+
+def read_own_site(sid):
+    """Only sites set up through this server (data/), never the read-only demo_data/."""
+    path = f"data/{sid}.json"
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    return None
+
+
+def save_site(sid, data):
     os.makedirs("data", exist_ok=True)
     with open(f"data/{sid}.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    return {"site_id": sid, "pages": len(data["pages"]), "logo": data["logo"]}
+
+
+def check_style_fields(logo, brand, emoji, tone):
+    if logo and not logo.strip().startswith(("http://", "https://")):
+        raise HTTPException(400, "Logo must be an image link (http or https).")
+    if brand and not HEX_OK.fullmatch(brand.strip()):
+        raise HTTPException(400, "Color must look like #1a2b3c.")
+    if emoji and len(emoji.strip()) > 4:
+        raise HTTPException(400, "Signature should be one symbol.")
+    if tone and tone not in TONE_OK:
+        raise HTTPException(400, "Unknown voice.")
+
+
+def run_setup(job_id, req, url, sid, token):
+    job = JOBS[job_id]
+
+    def progress(event, info):
+        if event == "page" or event == "pdf":
+            job["pages"] = info["count"]
+        if event == "pdf" and len(job["pdfs"]) < 3:
+            job["pdfs"].append(info["name"])
+        if event == "logo":
+            job["logo"] = True
+        if event == "action":
+            job["actions"] += 1
+        if event == "blocked":
+            job["blocked"] += 1
+
+    try:
+        job["stage"] = "reading"
+        data = crawl(url, progress)
+        if not data["pages"]:
+            job.update(status="error", error="We couldn't read this site. It may block automated readers.")
+            return
+        if req.logo:
+            data["logo"] = req.logo.strip()
+        if req.brand:
+            data["brand"] = req.brand.strip()
+        data["tone"] = req.tone if req.tone in TONE_OK else "friendly"
+        data["effects"] = req.effects
+        job["stage"] = "voice"
+        style = detect_style(data)
+        data["type"] = style["type"]
+        data["effect"] = {"motion": style["motion"], "emoji": (req.emoji or "").strip() or style["emoji"]}
+        data["edit_hash"] = token_hash(token)
+        data["updated"] = int(time.time())
+        save_site(sid, data)
+        job.update(status="done", stage="done",
+                   result={"site_id": sid, "pages": len(data["pages"]), "logo": data["logo"], "edit_token": token})
+    except Exception as e:
+        print("setup error", e)
+        job.update(status="error", error="Something went wrong while reading the site. Please try again.")
+
+
+@app.post("/setup")
+def setup(req: SetupReq, request: Request):
+    url = req.url.strip()
+    if not is_public_url(url):
+        raise HTTPException(400, "Please enter a public website link (http or https).")
+    check_style_fields(req.logo, req.brand, req.emoji, req.tone)
+    sid = site_id_from(url)
+
+    # someone already set this site up: only its owner can re-read it
+    existing = read_own_site(sid)
+    if existing and existing.get("edit_hash") and not owns(existing, req.token):
+        return {"existing": True, "site_id": sid, "pages": len(existing["pages"]), "logo": existing.get("logo")}
+
+    rate_limit(request, "setup", SETUP_PER_HOUR, 3600)
+    now = time.time()
+    for jid in [j for j, v in JOBS.items() if now - v["t"] > 1800]:
+        JOBS.pop(jid, None)
+    token = req.token if existing and owns(existing, req.token) else secrets.token_urlsafe(24)
+    job_id = uuid.uuid4().hex
+    JOBS[job_id] = {"t": now, "status": "running", "stage": "opening", "pages": 0, "pdfs": [],
+                    "logo": False, "actions": 0, "blocked": 0, "result": None, "error": None}
+    threading.Thread(target=run_setup, args=(job_id, req, url, sid, token), daemon=True).start()
+    return {"job": job_id}
+
+
+@app.get("/setup/{job_id}")
+def setup_status(job_id: str):
+    if not JOB_ID_OK.fullmatch(job_id) or job_id not in JOBS:
+        raise HTTPException(404, "Setup not found. Please start again.")
+    return {k: v for k, v in JOBS[job_id].items() if k != "t"}
+
+
+@app.post("/settings/{site_id}")
+def settings(site_id: str, req: SettingsReq, request: Request):
+    rate_limit(request, "settings", SETTINGS_PER_HOUR, 3600)
+    if not SITE_ID_OK.fullmatch(site_id):
+        raise HTTPException(400, "Bad site id")
+    data = read_own_site(site_id)
+    if not data or not owns(data, req.token):
+        raise HTTPException(403, "Only the person who set up this assistant can change it.")
+    check_style_fields(req.logo, req.brand, req.emoji, req.tone)
+    if req.logo is not None:
+        data["logo"] = req.logo.strip() or data.get("logo")
+    if req.brand is not None:
+        if req.brand.strip():
+            data["brand"] = req.brand.strip()
+        else:
+            data.pop("brand", None)  # empty = match the logo again
+    if req.tone:
+        data["tone"] = req.tone
+    if req.effects is not None:
+        data["effects"] = req.effects
+    if req.emoji:
+        data.setdefault("effect", {"motion": "twinkle"})["emoji"] = req.emoji.strip()
+    save_site(site_id, data)
+    return {"ok": True}
 
 
 @app.post("/chat")

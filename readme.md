@@ -23,6 +23,8 @@ Built for the **NVIDIA x Nebius Global AI Hackathon** · Track: **Best Apps and 
 | **Takes action** | Finds real booking, reservation and ordering links (OpenTable, Toast, Calendly, Vagaro, etc.) and shows a "Book now" or "Order online" button. Never invents a link. |
 | **Voice** | Ask by voice and hear the answer read aloud (Chrome and Edge). |
 | **Handles chains** | Asks "which location?" when hours or prices differ between locations. |
+| **Owner controls** | Setup returns a private edit key (kept in the owner's browser). Only the owner can restyle the assistant or re-read the site, so nobody can overwrite someone else's bot. |
+| **Real setup progress** | The setup receipt shows what the crawler is actually doing: pages read, PDFs found, logo, booking links. |
 
 ## How NVIDIA and Nebius are used
 
@@ -49,6 +51,7 @@ Customer asks ──► widget.js ──► server.py /chat ──► ask.py ─
 | `static/setup.html` | Landing page and setup flow (receipt, install card) |
 | `static/widget.js` | The chat bubble businesses embed on their site |
 | `static/preview.html` | Preview page used in the install card |
+| `static/privacy.html` | Privacy and terms |
 | `demo_data/` | Saved demo sites so the live demo survives server restarts |
 
 ## Run it locally
@@ -56,7 +59,7 @@ Customer asks ──► widget.js ──► server.py /chat ──► ask.py ─
 You need **Python 3.10+** and a **Nebius Token Factory API key**.
 
 ```bash
-git clone <this repo>
+git clone <https://github.com/Venkatanarayanamallineni/Freeagent>
 cd freeagent
 python -m venv venv
 
@@ -108,6 +111,15 @@ Render's free tier wipes its disk on restart, so sites set up there disappear. S
 - **Input checks:** site IDs are validated, chat history only accepts normal user and assistant turns, and the crawler refuses private or internal network addresses.
 - **API key** stays on the server in environment variables. It is never sent to the browser or committed.
 - **Known limits:** sites that build their content with JavaScript, or that block bots (for example Cloudflare's "Just a moment" page), can't be read. Menus that are scanned images inside PDFs can't be read yet. Voice input depends on the browser's own speech service.
+
+## Roadmap (after the hackathon)
+
+- **Owner dashboard:** see real customer questions, fix answers, spot what's missing from the site.
+- **Auto re-read:** refresh each site on a schedule so prices and hours stay current.
+- **Domain verification:** prove you own a site before setting up its assistant.
+- **Lead capture:** collect a name and contact when a visitor wants a callback.
+- **Native apps** for Shopify and Wix, so owners never touch code.
+- **Free self-hosted mode:** run the same NVIDIA Nemotron model locally with Ollama, no API key.
 
 ## Built during the hackathon
 

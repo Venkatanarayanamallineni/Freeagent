@@ -70,9 +70,12 @@ def maybe_action(a, link, actions):
     text_hit = len(text) <= 40 and ACTION_TEXT.search(text.lower())
     if host_hit or text_hit:
         actions[link] = {"url": link, "text": text[:40], "kind": action_kind(text, link)}
+        return actions[link]
 
 
-def crawl(start_url):
+def crawl(start_url, progress=None):
+    """progress(event, info) is called as we go, so the setup page can show real steps."""
+    say = progress or (lambda event, info: None)
     domain = urlparse(start_url).netloc.replace("www.", "")
     to_visit, seen, pages = [start_url], set(), []
     logo = None
@@ -97,6 +100,7 @@ def crawl(start_url):
             if text:
                 pages.append({"url": url, "title": "PDF: " + url.split("/")[-1], "text": text})
                 print("got pdf", url)
+                say("pdf", {"count": len(pages), "name": url.split("/")[-1][:40]})
             continue
 
         if "text/html" not in ctype:
@@ -107,10 +111,13 @@ def crawl(start_url):
         page_title = soup.title.string if soup.title and soup.title.string else ""
         if r.status_code in (403, 429, 503) or "Just a moment" in page_title:
             print("blocked", url)
+            say("blocked", {"url": url})
             continue
 
         if logo is None:
             logo = find_logo(soup, r.url)
+            if logo:
+                say("logo", {"url": logo})
 
         if site_name is None:
             meta = soup.find("meta", property="og:site_name") or soup.find("meta", attrs={"name": "application-name"})
@@ -123,7 +130,9 @@ def crawl(start_url):
 
         for a in soup.find_all("a", href=True):
             link = urljoin(r.url, a["href"]).split("#")[0]
-            maybe_action(a, link, actions)
+            found = maybe_action(a, link, actions)
+            if found:
+                say("action", {"kind": found["kind"]})
             if link in seen:
                 continue
             if link.lower().endswith(".pdf"):
@@ -137,6 +146,7 @@ def crawl(start_url):
         text = " ".join(soup.get_text(" ").split())
         pages.append({"url": url, "title": title, "text": text})
         print("got", url)
+        say("page", {"count": len(pages)})
 
     return {"site": start_url, "name": site_name, "description": description, "logo": logo,
             "actions": list(actions.values()), "pages": pages}

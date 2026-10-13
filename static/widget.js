@@ -35,7 +35,10 @@
   const TYPE_ICON = { food: "cloche", drinks: "glass", beauty: "polish", fashion: "hanger", books: "book", education: "cap", other: "sparkle" };
   const svg = (k, cls = "") => `<svg class="fa-i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[k] || ICONS.sparkle}</svg>`;
 
+  document.getElementById("fa-root")?.remove();
+  document.getElementById("fa-style")?.remove();
   const style = document.createElement("style");
+  style.id = "fa-style";
   style.textContent = `
   #fa-root{--fa-brand:#24211D;--fa-ink:#24211D;--fa-ivory:#F3EEE4;--fa-line:rgba(36,33,29,.1);
     font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--fa-ink)}
@@ -141,7 +144,7 @@
   @keyframes fa-micpulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--fa-brand) 45%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
   #fa-send{border:none;background:var(--fa-brand);color:#fff}
   #fa-send:hover{filter:brightness(1.15)}
-  #fa-foot{text-align:center;font-size:11px;color:#8a8f96;padding:0 0 8px;background:#fff}
+  #fa-foot{text-align:center;font-size:11px;line-height:1.4;color:#6f6a62;padding:0 12px 8px;background:#fff}
   @media (prefers-reduced-motion:reduce){#fa-bubble,#fa-flip,#fa-avatar,#fa-avatar::after,.fa-m,#fa-mic.fa-on{animation:none!important}#fa-fx{display:none}}`;
   document.head.appendChild(style);
 
@@ -168,7 +171,7 @@
         ${SR ? `<button class="fa-rbtn" id="fa-mic" aria-label="Ask by voice" title="Ask by voice">${svg("mic")}</button>` : ""}
         <button class="fa-rbtn" id="fa-send" aria-label="Send">${svg("send")}</button>
       </div>
-      <div id="fa-foot">Powered by FreeAgent</div>
+      <div id="fa-foot">AI answers from our website. Please confirm allergies and anything important with us.</div>
     </div>`;
   document.body.appendChild(root);
 

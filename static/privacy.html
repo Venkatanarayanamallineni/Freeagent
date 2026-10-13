@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy &amp; terms · FreeAgent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#DCD7CE;--paper:#ECE8E1;--ink:#24211D;--muted:#5B554C;--line:rgba(36,33,29,.14)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 "Geist",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  main{max-width:680px;margin:0 auto;padding:56px 24px 96px}
+  a{color:var(--ink)}
+  .back{font-size:15px;color:var(--muted)}
+  h1{font:400 clamp(40px,6vw,60px)/1.05 "Instrument Serif",Georgia,serif;margin:18px 0 8px}
+  .date{color:var(--muted);font-size:15px;margin:0 0 36px}
+  h2{font:400 28px/1.2 "Instrument Serif",Georgia,serif;margin:36px 0 8px}
+  p,li{color:#36322C}
+  ul{padding-left:20px}
+  .box{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px;margin-top:28px}
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="/">← Back to FreeAgent</a>
+  <h1>Privacy &amp; terms</h1>
+  <p class="date">Plain words, no fine print. Last updated October 2026.</p>
+
+  <div class="box">FreeAgent is a hackathon project in active development. It is offered as is, for testing and demos.</div>
+
+  <h2>What we read</h2>
+  <p>When someone sets up an assistant, we read up to 50 public pages of that website, including public PDFs. We only read pages anyone can open without logging in. We don't read pages behind logins, and we respect sites that block automated readers.</p>
+
+  <h2>What we store</h2>
+  <ul>
+    <li>The text of those public pages, the site's logo link, name and description, and links for booking or ordering.</li>
+    <li>The style settings chosen at setup (voice, color, signature).</li>
+    <li>A scrambled version of the owner's edit key. We never store the key itself.</li>
+  </ul>
+
+  <h2>Chats</h2>
+  <p>We don't save chat conversations. When a visitor asks a question, the question and the site's stored text are sent to the AI model to write the answer, and then the conversation is gone from our side. Recent messages are kept only in the visitor's open browser tab so the assistant can follow the conversation.</p>
+
+  <h2>Who processes the data</h2>
+  <p>Answers are written by NVIDIA's Nemotron model, running on Nebius Token Factory. Questions and site text are sent there to create each answer. The app itself is hosted on Render.</p>
+
+  <h2>Answers can be wrong</h2>
+  <p>The assistant answers only from the business's own website and links to its source, but AI can still make mistakes, and websites go out of date. Please confirm anything important with the business directly, especially allergies, prices, and policies. The business is responsible for what its website says.</p>
+
+  <h2>Fair use</h2>
+  <ul>
+    <li>Set up assistants only for websites you own or have permission to use.</li>
+    <li>Don't use FreeAgent to spam, overload, or misuse anyone's website or our service. We limit how often anyone can use it.</li>
+  </ul>
+
+  <h2>Removing a site</h2>
+  <p>If you own a website and want its assistant and stored text removed, open an issue on our GitHub page and we'll delete it.</p>
+</main>
+</body>
+</html>
