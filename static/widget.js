@@ -7,6 +7,11 @@
   let actions = [];          // booking/order links this business really has
   let voiceTurn = false;     // last question came from the mic
   let readAloud = false;     // header speaker toggle
+  const SHOW_STATS = s.dataset.stats === "1";   // our own pages show model + speed under answers
+  let OWNER_TOKEN = "";                          // set only on our preview page, for the owner
+  if (s.dataset.owner === "1") {
+    try { OWNER_TOKEN = (JSON.parse(localStorage.getItem("fa_tokens") || "{}"))[SITE] || ""; } catch (e) {}
+  }
 
   /* ---------- line icons (same family as the landing page) ---------- */
   const P = d => `<path d="${d}"/>`;
@@ -41,7 +46,10 @@
   style.id = "fa-style";
   style.textContent = `
   #fa-root{--fa-brand:#24211D;--fa-ink:#24211D;--fa-ivory:#F3EEE4;--fa-line:rgba(36,33,29,.1);
+    --fa-bg:#EDE9E3;--fa-card:#fff;--fa-text:#1A1714;--fa-sub:#5C564D;--fa-bar:#fff;--fa-field:#fff;--fa-edge:rgba(36,33,29,.14);--fa-glow:10%;
     font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--fa-ink)}
+  #fa-root.fa-night{--fa-ink:#EFE8DC;--fa-line:rgba(239,232,220,.1);
+    --fa-bg:#181612;--fa-card:#24211C;--fa-text:#EFE8DC;--fa-sub:#ABA396;--fa-bar:#1E1B17;--fa-field:#2A2621;--fa-edge:rgba(239,232,220,.16);--fa-glow:18%}
   #fa-root *{box-sizing:border-box}
   #fa-root .fa-i{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
@@ -58,9 +66,9 @@
   .fa-back{transform:rotateY(180deg);border-radius:50%;background:var(--fa-brand);color:var(--fa-ivory);display:grid;place-items:center;
     box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
   .fa-back .fa-i{width:56%;height:56%;stroke-width:1.2}
-  .fa-logo{width:100%;height:100%;border-radius:50%;background:#fff;display:grid;place-items:center;overflow:hidden;color:var(--fa-ink)}
+  .fa-logo{width:100%;height:100%;border-radius:50%;background:#fff;display:grid;place-items:center;overflow:hidden;color:#24211D}
   .fa-logo > .fa-i{width:50%;height:50%}
-  .fa-logo.fa-dark{background:var(--fa-ink)}
+  .fa-logo.fa-dark{background:#24211D}
   .fa-logo img{width:78%;height:78%;object-fit:contain}
 
   /* ---------- small effect above bubble ---------- */
@@ -87,7 +95,7 @@
   /* ---------- panel ---------- */
   #fa-panel{position:fixed;bottom:100px;right:24px;width:370px;max-width:calc(100vw - 32px);height:560px;max-height:calc(100vh - 120px);
     display:flex;flex-direction:column;overflow:hidden;border-radius:22px;z-index:2147483000;
-    background:rgba(245,242,237,.88);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);
+    background:var(--fa-bg);
     border:1px solid var(--fa-line);box-shadow:0 30px 60px -24px rgba(36,33,29,.45);
     opacity:0;transform:translateY(16px) scale(.98);visibility:hidden;transition:opacity .3s,transform .3s,visibility .3s}
   #fa-panel.fa-open{opacity:1;transform:none;visibility:visible}
@@ -115,36 +123,46 @@
   @keyframes fa-pop{40%{transform:scale(1.14)}}
 
   /* ---------- messages ---------- */
-  #fa-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
-  .fa-m{max-width:86%;padding:10px 14px;border-radius:16px;word-wrap:break-word;animation:fa-in .3s ease}
+  #fa-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:radial-gradient(120% 55% at 100% 0%,color-mix(in srgb,var(--fa-brand) var(--fa-glow),transparent),transparent 65%),var(--fa-bg)}
+  .fa-m{max-width:86%;padding:10px 14px;border-radius:16px;word-wrap:break-word;font-size:14.5px;line-height:1.5;animation:fa-in .3s ease}
   @keyframes fa-in{from{opacity:0;transform:translateY(6px)}}
   .fa-u{align-self:flex-end;background:var(--fa-brand);color:#fff;font-weight:500;border-bottom-right-radius:4px}
-  .fa-b{align-self:flex-start;background:#fff;border:1px solid var(--fa-line);border-bottom-left-radius:4px}
+  .fa-b{align-self:flex-start;background:var(--fa-card);color:var(--fa-text);border:1px solid var(--fa-edge);border-bottom-left-radius:4px;box-shadow:0 1px 2px rgba(36,33,29,.06)}
   .fa-m p{margin:0 0 6px}.fa-m p:last-child{margin:0}
   .fa-m ul{margin:4px 0 6px;padding-left:18px}.fa-m li{margin:2px 0}
   .fa-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
   .fa-src{display:inline-flex;align-items:center;font-size:12px;text-decoration:none;border-radius:999px;padding:3px 10px;
-    color:var(--fa-ink);border:1px solid rgba(0,0,0,.18);transition:background .2s}
-  .fa-src:hover{background:rgba(0,0,0,.05)}
+    color:var(--fa-text);border:1px solid var(--fa-edge);transition:background .2s}
+  .fa-src:hover{background:var(--fa-line)}
   .fa-act{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;text-decoration:none;border-radius:999px;padding:6px 14px;
     background:var(--fa-brand);color:#fff;transition:filter .2s,transform .2s}
   .fa-act:hover{filter:brightness(1.15);transform:translateY(-1px)}
+  .fa-meta{margin-top:8px;padding-top:7px;border-top:1px solid var(--fa-line);font-size:11.5px;color:var(--fa-sub);letter-spacing:.01em}
+  .fa-fix{display:inline-block;margin-top:7px;margin-left:8px;background:none;border:none;padding:0;font:inherit;font-size:12px;color:var(--fa-brand);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+  .fa-edit{margin-top:8px;display:grid;gap:6px}
+  .fa-edit textarea{width:100%;min-height:76px;resize:vertical;border:1px solid var(--fa-edge);border-radius:10px;padding:8px 10px;font:inherit;color:var(--fa-text);background:var(--fa-field)}
+  .fa-edit div{display:flex;gap:6px;align-items:center}
+  .fa-edit button{border:none;border-radius:999px;padding:5px 12px;font:inherit;font-size:12.5px;cursor:pointer}
+  .fa-edit .fa-save{background:var(--fa-brand);color:#fff}
+  .fa-edit .fa-cancel{background:var(--fa-line);color:var(--fa-text)}
+  .fa-edit small{font-size:11.5px;color:var(--fa-sub)}
   .fa-dots span{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:var(--fa-brand);animation:fa-blink 1.2s infinite}
   .fa-dots span:nth-child(2){animation-delay:.2s}.fa-dots span:nth-child(3){animation-delay:.4s}
   @keyframes fa-blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
 
   /* ---------- input row ---------- */
-  #fa-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--fa-line);background:#fff;align-items:center}
-  #fa-in{flex:1;min-width:0;border:1px solid rgba(0,0,0,.14);border-radius:999px;padding:10px 14px;font:inherit;outline:none;background:#fff;color:var(--fa-ink)}
+  #fa-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--fa-line);background:var(--fa-bar);align-items:center}
+  #fa-in{flex:1;min-width:0;border:1px solid var(--fa-edge);border-radius:999px;padding:10px 14px;font:inherit;outline:none;background:var(--fa-field);color:var(--fa-text)}
+  #fa-in::placeholder{color:var(--fa-sub)}
   #fa-in:focus{border-color:var(--fa-brand)}
   .fa-rbtn{width:40px;height:40px;flex:none;border-radius:50%;display:grid;place-items:center;cursor:pointer;font-size:17px;transition:all .25s}
-  #fa-mic{border:1px solid rgba(0,0,0,.14);background:#fff;color:var(--fa-ink)}
+  #fa-mic{border:1px solid var(--fa-edge);background:var(--fa-field);color:var(--fa-text)}
   #fa-mic:hover{border-color:var(--fa-brand)}
   #fa-mic.fa-on{background:var(--fa-brand);color:#fff;border-color:var(--fa-brand);animation:fa-micpulse 1.3s ease-out infinite}
   @keyframes fa-micpulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--fa-brand) 45%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
   #fa-send{border:none;background:var(--fa-brand);color:#fff}
   #fa-send:hover{filter:brightness(1.15)}
-  #fa-foot{text-align:center;font-size:11px;line-height:1.4;color:#6f6a62;padding:0 12px 8px;background:#fff}
+  #fa-foot{text-align:center;font-size:11px;line-height:1.4;color:var(--fa-sub);padding:0 12px 8px;background:var(--fa-bar)}
   @media (prefers-reduced-motion:reduce){#fa-bubble,#fa-flip,#fa-avatar,#fa-avatar::after,.fa-m,#fa-mic.fa-on{animation:none!important}#fa-fx{display:none}}`;
   document.head.appendChild(style);
 
@@ -183,6 +201,18 @@
   const spk = root.querySelector("#fa-spk");
   let state = "idle";
 
+  /* ---------- light / dark ---------- */
+  let ownerTheme = "auto", pageTheme = "";
+  const nightQuery = window.matchMedia ? matchMedia("(prefers-color-scheme: dark)") : null;
+  function applyTheme() {
+    const night = ownerTheme === "dark" || (ownerTheme === "auto" && (pageTheme ? pageTheme === "dark" : !!(nightQuery && nightQuery.matches)));
+    root.classList.toggle("fa-night", night);
+  }
+  nightQuery?.addEventListener?.("change", applyTheme);
+  // our own landing page tells the chat when its light/dark switch changes
+  window.addEventListener("fa-theme", e => { pageTheme = e.detail === "dark" || e.detail === "light" ? e.detail : ""; applyTheme(); });
+  if (s.dataset.theme) pageTheme = s.dataset.theme;
+
   function setState(st) {
     state = st;
     root.classList.remove("fa-st-idle", "fa-st-listening", "fa-st-thinking", "fa-st-answering");
@@ -194,6 +224,8 @@
     if (d.name) root.querySelector("#fa-title").textContent = d.name;
     if (d.tagline) { tagline = d.tagline; if (state === "idle") sub.textContent = tagline; }
     if (d.brand) root.style.setProperty("--fa-brand", d.brand);
+    ownerTheme = d.theme || "auto";
+    applyTheme();
     actions = d.actions || [];
     if (d.logo) root.querySelectorAll(".fa-logo").forEach(box => {
       const img = new Image();
@@ -270,12 +302,31 @@
     return div;
   }
 
-  /* ---------- voice out ---------- */
+  /* ---------- voice out: pick the most natural voice this device has ---------- */
+  let voice = null;
+  function pickVoice() {
+    const all = speechSynthesis.getVoices();
+    if (!all.length) return;
+    const lang = (navigator.language || "en-US").toLowerCase(), base = lang.split("-")[0];
+    const score = v => {
+      const n = v.name.toLowerCase(), l = (v.lang || "").toLowerCase();
+      let p = 0;
+      if (l === lang) p += 40; else if (l.startsWith(base)) p += 25; else return -1;
+      if (/natural|neural|online/.test(n)) p += 50;          // Edge's natural voices
+      if (/google/.test(n)) p += 30;                          // Chrome's voices
+      if (/samantha|ava|allison|aria|jenny|guy|libby|sonia|serena|daniel/.test(n)) p += 15;
+      if (/david|zira|mark|espeak/.test(n)) p -= 20;          // older robotic voices
+      return p;
+    };
+    voice = all.map(v => [score(v), v]).filter(x => x[0] >= 0).sort((a, b) => b[0] - a[0])[0]?.[1] || null;
+  }
+  if (canSpeak) { pickVoice(); speechSynthesis.addEventListener?.("voiceschanged", pickVoice); }
   function speak(text) {
     if (!canSpeak || !text) return;
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text.replace(/^[-•*]\s+/gm, ""));
-    u.rate = 1.03;
+    if (voice) { u.voice = voice; u.lang = voice.lang; }
+    u.rate = 0.98;
     speechSynthesis.speak(u);
   }
   if (spk) spk.onclick = () => {
@@ -283,6 +334,47 @@
     spk.setAttribute("aria-pressed", String(readAloud));
     if (!readAloud) speechSynthesis.cancel();
   };
+
+  /* ---------- our own pages: show which model answered, and how fast ---------- */
+  function addMeta(div, m) {
+    const el = document.createElement("div");
+    el.className = "fa-meta";
+    let t = `${m.model} on ${m.host} · ${(m.ms / 1000).toFixed(1)}s · ${Number(m.tokens).toLocaleString()} tokens`;
+    if (typeof m.cost === "number") t += ` · $${m.cost.toFixed(4)}`;
+    el.textContent = t;
+    div.appendChild(el);
+  }
+
+  /* ---------- owner only: fix an answer right here ---------- */
+  function addFix(div, q, answerText) {
+    const btn = document.createElement("button");
+    btn.className = "fa-fix"; btn.type = "button"; btn.textContent = "Fix this answer";
+    btn.onclick = () => {
+      btn.remove();
+      const box = document.createElement("div"); box.className = "fa-edit";
+      const ta = document.createElement("textarea"); ta.value = answerText; ta.setAttribute("aria-label", "Your answer");
+      const row = document.createElement("div");
+      const save = document.createElement("button"); save.className = "fa-save"; save.type = "button"; save.textContent = "Save";
+      const cancel = document.createElement("button"); cancel.className = "fa-cancel"; cancel.type = "button"; cancel.textContent = "Cancel";
+      const note = document.createElement("small");
+      row.append(save, cancel, note); box.append(ta, row); div.appendChild(box); ta.focus();
+      cancel.onclick = () => { box.remove(); div.appendChild(btn); };
+      save.onclick = async () => {
+        save.disabled = true; note.textContent = "Saving…";
+        try {
+          const r = await fetch(`${API}/office/${SITE}`, { method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: OWNER_TOKEN, action: "add_correction", q, a: ta.value }) });
+          const d = await r.json().catch(() => ({}));
+          if (!r.ok) { note.textContent = typeof d.detail === "string" ? d.detail : "Couldn't save."; save.disabled = false; return; }
+          box.remove();
+          const ok = document.createElement("div"); ok.className = "fa-meta";
+          ok.textContent = "Saved. From now on, I'll answer this the way you wrote it.";
+          div.appendChild(ok);
+        } catch (e) { note.textContent = "Couldn't reach the server."; save.disabled = false; }
+      };
+    };
+    div.appendChild(btn);
+  }
 
   async function send() {
     const q = input.value.trim();
@@ -299,7 +391,11 @@
       const d = await r.json();
       const a = d.answer || d.detail || "Sorry, something went wrong.";
       spoken = render(wait, a);
-      if (d.answer) history.push({ role: "user", content: q }, { role: "assistant", content: a });
+      if (d.answer) {
+        history.push({ role: "user", content: q }, { role: "assistant", content: a });
+        if (SHOW_STATS && d.meta) addMeta(wait, d.meta);
+        if (OWNER_TOKEN) addFix(wait, q, spoken);
+      }
     } catch (e) { spoken = render(wait, "Can't reach the server right now."); }
     msgs.scrollTop = msgs.scrollHeight;
     if (voiceTurn || readAloud) speak(spoken);

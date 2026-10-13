@@ -76,6 +76,8 @@ if (!site || !/^[a-z0-9_\-]{1,100}$/.test(site)) {
   const w = document.createElement("script");
   w.src = "/static/widget.js";
   w.dataset.site = site;
+  w.dataset.stats = "1";                                   // show model and speed under answers
+  if (params.get("owner") === "1") w.dataset.owner = "1";  // owner can fix answers (needs their key in this browser)
   if (params.get("open") === "1") {
     // inside the install card: open the chat so it shows right away
     w.onload = () => setTimeout(() => document.getElementById("fa-bubble")?.click(), 900);

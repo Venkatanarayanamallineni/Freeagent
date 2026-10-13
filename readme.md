@@ -24,6 +24,8 @@ Built for the **NVIDIA x Nebius Global AI Hackathon** · Track: **Best Apps and 
 | **Voice** | Ask by voice and hear the answer read aloud (Chrome and Edge). |
 | **Handles chains** | Asks "which location?" when hours or prices differ between locations. |
 | **Owner controls** | Setup returns a private edit key (kept in the owner's browser). Only the owner can restyle the assistant or re-read the site, so nobody can overwrite someone else's bot. |
+| **Back Office** | Owners teach their assistant: fix any answer right in the chat, answer the questions it couldn't (they collect in an inbox), and set house rules like "always mention the Tuesday special". Owner answers outrank the website. |
+| **Visible model work** | On our own pages, every answer shows which model answered, how long it took and how many tokens it used, for example `NVIDIA Nemotron on Nebius · 1.2s · 5,130 tokens`. Cost per answer shows too if you add Nebius prices to `.env`. |
 | **Real setup progress** | The setup receipt shows what the crawler is actually doing: pages read, PDFs found, logo, booking links. |
 
 ## How NVIDIA and Nebius are used
@@ -51,6 +53,7 @@ Customer asks ──► widget.js ──► server.py /chat ──► ask.py ─
 | `static/setup.html` | Landing page and setup flow (receipt, install card) |
 | `static/widget.js` | The chat bubble businesses embed on their site |
 | `static/preview.html` | Preview page used in the install card |
+| `static/office.html` | Back Office: inbox, owner answers, house rules |
 | `static/privacy.html` | Privacy and terms |
 | `demo_data/` | Saved demo sites so the live demo survives server restarts |
 
@@ -59,7 +62,7 @@ Customer asks ──► widget.js ──► server.py /chat ──► ask.py ─
 You need **Python 3.10+** and a **Nebius Token Factory API key**.
 
 ```bash
-git clone <https://github.com/Venkatanarayanamallineni/Freeagent>
+git clone <this repo>
 cd freeagent
 python -m venv venv
 

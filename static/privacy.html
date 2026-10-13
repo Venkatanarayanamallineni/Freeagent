@@ -38,10 +38,12 @@
     <li>The text of those public pages, the site's logo link, name and description, and links for booking or ordering.</li>
     <li>The style settings chosen at setup (voice, color, signature).</li>
     <li>A scrambled version of the owner's edit key. We never store the key itself.</li>
+    <li>What the owner adds in Back Office: their own answers and house rules.</li>
   </ul>
 
   <h2>Chats</h2>
-  <p>We don't save chat conversations. When a visitor asks a question, the question and the site's stored text are sent to the AI model to write the answer, and then the conversation is gone from our side. Recent messages are kept only in the visitor's open browser tab so the assistant can follow the conversation.</p>
+  <p>We don't save chat conversations. When a visitor asks a question, the question and the site's stored text are sent to the AI model to write the answer. Recent messages are kept only in the visitor's open browser tab so the assistant can follow the conversation.</p>
+  <p>One exception: when the assistant can't answer a question, we save that question's text (nothing else, no name or contact) so the business owner can answer it in their Back Office. Please don't type personal details into the chat.</p>
 
   <h2>Who processes the data</h2>
   <p>Answers are written by NVIDIA's Nemotron model, running on Nebius Token Factory. Questions and site text are sent there to create each answer. The app itself is hosted on Render.</p>

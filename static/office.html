@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Back Office · FreeAgent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#DCD7CE;--paper:#ECE8E1;--paper-2:#F5F2ED;--ink:#24211D;--muted:#5B554C;--line:rgba(36,33,29,.14);
+    --brass:#A88B5A;--brass-soft:rgba(168,139,90,.24);--ivory:#F3EEE4;--soft:0 24px 48px -28px rgba(36,33,29,.4),0 2px 6px rgba(36,33,29,.06)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Geist",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body.embed{background:transparent}
+  :focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:6px}
+  .top{display:flex;align-items:center;gap:12px;max-width:820px;margin:0 auto;padding:22px 24px 0}
+  .top a{text-decoration:none;color:var(--muted);font-size:15px;margin-left:auto}
+  .seal{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:var(--brass);font:italic 400 22px/1 "Instrument Serif",Georgia,serif}
+  .top b{font:400 26px/1 "Instrument Serif",Georgia,serif}
+  main{max-width:820px;margin:0 auto;padding:22px 24px 72px}
+  body.embed main{padding:4px 2px 12px}
+  h1{font:400 clamp(34px,5vw,48px)/1.05 "Instrument Serif",Georgia,serif;margin:8px 0 6px}
+  .lead{color:var(--muted);margin:0 0 24px;max-width:56ch}
+  body.embed h1{font-size:30px}
+  section{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:20px;margin-top:16px;box-shadow:var(--soft)}
+  body.embed section{box-shadow:none;background:var(--paper-2)}
+  .sh{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+  h2{font:400 26px/1.15 "Instrument Serif",Georgia,serif;margin:0}
+  .count{font-size:13px;border-radius:999px;padding:1px 9px;background:var(--ink);color:var(--ivory)}
+  .count.zero{background:rgba(36,33,29,.12);color:var(--muted)}
+  .hint{color:var(--muted);font-size:14.5px;margin:0 0 14px}
+  .item{border-top:1px solid var(--line);padding:14px 0}
+  .item:first-of-type{border-top:none}
+  .q{font:italic 400 21px/1.3 "Instrument Serif",Georgia,serif}
+  .when{font-size:12.5px;color:var(--muted)}
+  .a{color:#3a362f;margin-top:4px;white-space:pre-wrap}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+  input[type=text],textarea{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  input::placeholder,textarea::placeholder{color:#6F685E}
+  body.embed input[type=text],body.embed textarea{background:#fff}
+  textarea{min-height:120px;resize:vertical;line-height:1.55}
+  .row input[type=text]{flex:1;min-width:200px}
+  button{font:inherit;font-size:14.5px;border-radius:999px;padding:9px 16px;cursor:pointer;transition:background .3s}
+  .primary{border:none;background:var(--ink);color:var(--ivory)}
+  .primary:hover{background:#4a3f36}
+  .primary:disabled{opacity:.6;cursor:wait}
+  .ghost{border:1px solid var(--line);background:transparent;color:var(--ink)}
+  .ghost:hover{background:var(--brass-soft)}
+  .link{border:none;background:none;padding:4px 0;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+  .empty{color:var(--muted);font-size:15px;padding:6px 0 2px}
+  .grid2{display:grid;grid-template-columns:1fr 1.4fr;gap:8px}
+  .status{font-size:14px;color:var(--muted);min-height:1.4em}
+  .msg{max-width:520px;margin:18vh auto 0;text-align:center;padding:0 24px}
+  .msg a{color:var(--ink)}
+  @media (max-width:620px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top" id="top">
+  <span class="seal" aria-hidden="true">F</span><b>Back Office</b>
+  <a href="/">FreeAgent home</a>
+</div>
+
+<main id="main">
+  <h1 id="title">Teach your front desk.</h1>
+  <p class="lead">Anything you write here beats the website. Your assistant uses it right away.</p>
+
+  <section aria-labelledby="h-inbox">
+    <div class="sh"><h2 id="h-inbox">Questions we couldn't answer</h2><span class="count zero" id="inboxCount">0</span></div>
+    <p class="hint">When a customer asks something your site doesn't cover, it lands here. Answer once, and the assistant knows it from then on.</p>
+    <div id="inbox"></div>
+  </section>
+
+  <section aria-labelledby="h-answers">
+    <div class="sh"><h2 id="h-answers">Your answers</h2><span class="count zero" id="fixCount">0</span></div>
+    <p class="hint">Tip: in the preview, click “Fix this answer” under any reply to add one here.</p>
+    <div id="fixes"></div>
+    <div class="grid2" style="margin-top:12px">
+      <input type="text" id="newQ" placeholder="A question, like “Is there parking?”" aria-label="Question">
+      <input type="text" id="newA" placeholder="Your answer, like “Free street parking after 6 pm.”" aria-label="Answer">
+    </div>
+    <div class="row"><button class="primary" id="addFix" type="button">Add answer</button><span class="status" id="fixStatus" role="status"></span></div>
+  </section>
+
+  <section aria-labelledby="h-rules">
+    <div class="sh"><h2 id="h-rules">House rules</h2></div>
+    <p class="hint">Plain words, one per line. Up to 15.</p>
+    <textarea id="rules" aria-label="House rules" placeholder="Always mention our Tuesday 2-for-1 special&#10;Never promise delivery times&#10;For allergy questions, ask them to call us"></textarea>
+    <div class="row"><button class="primary" id="saveRules" type="button">Save rules</button><span class="status" id="rulesStatus" role="status"></span></div>
+  </section>
+
+  <div class="row"><button class="link" id="refresh" type="button">Refresh</button></div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const site = params.get("site") || "";
+if (params.get("embed") === "1") { document.body.classList.add("embed"); $("top").remove(); }
+
+let token = "";
+try { token = (JSON.parse(localStorage.getItem("fa_tokens") || "{}"))[site] || ""; } catch (e) {}
+
+function stop(html) { $("main").innerHTML = `<div class="msg">${html}</div>`; }
+if (!/^[a-z0-9_\-]{1,100}$/.test(site)) stop('<h1>No assistant picked.</h1><p>Open Back Office from your install card. <a href="/">Go to setup</a></p>');
+else if (!token) stop('<h1>This Back Office is locked.</h1><p>Open it in the same browser you used to set up the assistant. Only the owner can see it.</p><p><a href="/">Go to setup</a></p>');
+
+async function call(action, extra = {}) {
+  const r = await fetch(`/office/${site}`, { method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, action, ...extra }) });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(r.status < 500 && typeof d.detail === "string" ? d.detail : "Something went wrong. Please try again.");
+  return d;
+}
+
+const ago = t => {
+  const s = Math.max(1, Math.floor(Date.now() / 1000 - t));
+  if (s < 3600) return `${Math.ceil(s / 60)} min ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)} h ago`;
+  return `${Math.floor(s / 86400)} days ago`;
+};
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const setCount = (id, n) => { const c = $(id); c.textContent = n; c.classList.toggle("zero", !n); };
+
+function render(st) {
+  $("title").textContent = st.name ? `Teach ${st.name}'s front desk.` : "Teach your front desk.";
+
+  const inbox = $("inbox"); inbox.textContent = "";
+  setCount("inboxCount", st.inbox.length);
+  if (!st.inbox.length) inbox.appendChild(el("p", "empty", "Nothing waiting. Nice."));
+  [...st.inbox].reverse().forEach(item => {
+    const box = el("div", "item");
+    box.append(el("div", "q", `“${item.q}”`), el("div", "when", ago(item.t)));
+    const row = el("div", "row");
+    const inp = el("input"); inp.type = "text"; inp.placeholder = "Your answer"; inp.setAttribute("aria-label", `Answer for: ${item.q}`);
+    const save = el("button", "primary", "Save"); save.type = "button";
+    const skip = el("button", "ghost", "Dismiss"); skip.type = "button";
+    const note = el("span", "status");
+    save.onclick = async () => {
+      if (!inp.value.trim()) { note.textContent = "Write an answer first."; inp.focus(); return; }
+      save.disabled = true;
+      try { render(await call("answer", { id: item.id, a: inp.value })); } catch (e) { note.textContent = e.message; save.disabled = false; }
+    };
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") save.click(); });
+    skip.onclick = async () => { try { render(await call("dismiss", { id: item.id })); } catch (e) { note.textContent = e.message; } };
+    row.append(inp, save, skip, note); box.appendChild(row); inbox.appendChild(box);
+  });
+
+  const fixes = $("fixes"); fixes.textContent = "";
+  setCount("fixCount", st.corrections.length);
+  if (!st.corrections.length) fixes.appendChild(el("p", "empty", "None yet."));
+  [...st.corrections].reverse().forEach(c => {
+    const box = el("div", "item");
+    box.append(el("div", "q", `“${c.q}”`), el("div", "a", c.a));
+    const del = el("button", "link", "Remove"); del.type = "button";
+    del.onclick = async () => { try { render(await call("delete_correction", { id: c.id })); } catch (e) { $("fixStatus").textContent = e.message; } };
+    box.appendChild(del); fixes.appendChild(box);
+  });
+
+  if (document.activeElement !== $("rules")) $("rules").value = st.rules.join("\n");
+}
+
+async function load() {
+  try { render(await call("load")); }
+  catch (e) { stop(`<h1>Back Office is unavailable.</h1><p></p>`); document.querySelector(".msg p").textContent = e.message; }
+}
+
+if (site && token) {
+  $("addFix").onclick = async () => {
+    const q = $("newQ").value.trim(), a = $("newA").value.trim();
+    if (!q || !a) { $("fixStatus").textContent = "Fill in both the question and the answer."; return; }
+    $("addFix").disabled = true; $("fixStatus").textContent = "";
+    try { render(await call("add_correction", { q, a })); $("newQ").value = ""; $("newA").value = ""; $("fixStatus").textContent = "Added."; }
+    catch (e) { $("fixStatus").textContent = e.message; }
+    finally { $("addFix").disabled = false; }
+  };
+  $("saveRules").onclick = async () => {
+    $("saveRules").disabled = true; $("rulesStatus").textContent = "";
+    try { render(await call("set_rules", { rules: $("rules").value.split("\n") })); $("rulesStatus").textContent = "Saved."; }
+    catch (e) { $("rulesStatus").textContent = e.message; }
+    finally { $("saveRules").disabled = false; }
+  };
+  $("refresh").onclick = load;
+  load();
+}
+</script>
+</body>
+</html>

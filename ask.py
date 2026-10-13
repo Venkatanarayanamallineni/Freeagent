@@ -35,13 +35,14 @@ How to answer:
 When something is missing:
 - If they ask for something we clearly don't sell (cars at a cafe, laptops at a clothing store): ONE short, light, playful line that makes clear we don't sell it, then point to something real we DO offer. The joke must not state any fake fact, and may only mention items we really offer. No source.
   Example: "No laptops here, unless you count our pancakes as a flat, round device. Want to see our breakfast menu?"
-- If it's info we might have but isn't below (parking, allergies, stock): say you don't have that detail handy and share our phone or email from below if available. No source.
+- If it's info we might have but isn't below (parking, allergies, stock): say you don't have that detail handy and share our phone or email from below if available. No source. Then add the tag [[NO_ANSWER]] at the very end.
+- Only use [[NO_ANSWER]] when the detail is missing. Never use it for normal answers or for things we clearly don't sell.
 
 {tone}
 Style: plain text. Be brief: 1-3 short lines for simple questions, max 5 lines ever. For lists, start each line with "- ". Give only what was asked.
 Put exactly ONE source at the very end, like: Source: <url> using the most specific page. Never put URLs anywhere else.
 
-OUR INFORMATION:
+{owner}OUR INFORMATION:
 {context}"""
 
 
@@ -84,14 +85,34 @@ def build_context(data):
     return "\n\n---\n\n".join(parts)
 
 
+def owner_block(data):
+    """The owner's own answers and house rules from Back Office. These outrank the website."""
+    parts = []
+    fixes = data.get("corrections") or []
+    if fixes:
+        lines = "\n".join(f"Q: {c['q']}\nA: {c['a']}" for c in fixes[-50:])
+        parts.append("OUR OWN ANSWERS (written by the owner; most trusted. Use them for the same or similar questions, "
+                     "and follow them if they disagree with the website):\n" + lines)
+    rules = data.get("rules") or []
+    if rules:
+        parts.append("HOUSE RULES FROM THE OWNER (always follow, but never invent facts):\n" + "\n".join(f"- {r}" for r in rules[:15]))
+    return "\n\n".join(parts) + "\n\n" if parts else ""
+
+
 def ask(data, history, question):
+    """Returns {"answer", "unanswered", "tokens"}."""
     system = SYSTEM.format(name=business_name(data),
                            tone=TONES.get(data.get("tone"), TONES["friendly"]),
+                           owner=owner_block(data),
                            context=build_context(data))
     messages = [{"role": "system", "content": system}] + history + [{"role": "user", "content": question}]
     r = client.chat.completions.create(model=MODEL, messages=messages, temperature=0.2)
-    answer = r.choices[0].message.content or ""
-    return re.sub(r"<think>.*?</think>", "", answer, flags=re.S).strip()
+    answer = re.sub(r"<think>.*?</think>", "", r.choices[0].message.content or "", flags=re.S).strip()
+    unanswered = "[[NO_ANSWER]]" in answer
+    answer = answer.replace("[[NO_ANSWER]]", "").strip()
+    usage = getattr(r, "usage", None)
+    tokens = {"in": getattr(usage, "prompt_tokens", 0) or 0, "out": getattr(usage, "completion_tokens", 0) or 0}
+    return {"answer": answer, "unanswered": unanswered, "tokens": tokens}
 
 
 TYPES = ["food", "drinks", "beauty", "fashion", "books", "education", "other"]
@@ -129,6 +150,6 @@ if __name__ == "__main__":
         q = input("\nYou: ")
         if q.lower() == "quit":
             break
-        a = ask(data, history, q)
+        a = ask(data, history, q)["answer"]
         print("Bot:", a)
         history += [{"role": "user", "content": q}, {"role": "assistant", "content": a}]

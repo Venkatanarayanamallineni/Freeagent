@@ -22,6 +22,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"],
 CHAT_PER_MIN = 15          # per visitor
 SETUP_PER_HOUR = 10        # per visitor
 SETTINGS_PER_HOUR = 40     # per visitor
+OFFICE_PER_HOUR = 200      # per visitor
 CHAT_PER_DAY_TOTAL = 1500  # all visitors combined
 MAX_QUESTION_CHARS = 500
 
@@ -157,6 +158,7 @@ class SetupReq(BaseModel):
 
 class SettingsReq(BaseModel):
     token: str
+    theme: Optional[str] = None   # chat look: auto / light / dark
     logo: Optional[str] = None
     brand: Optional[str] = None
     tone: Optional[str] = None
@@ -303,6 +305,8 @@ def settings(site_id: str, req: SettingsReq, request: Request):
         data["tone"] = req.tone
     if req.effects is not None:
         data["effects"] = req.effects
+    if req.theme in ("auto", "light", "dark"):
+        data["theme"] = req.theme
     if req.emoji:
         data.setdefault("effect", {"motion": "twinkle"})["emoji"] = req.emoji.strip()
     save_site(site_id, data)
@@ -324,12 +328,123 @@ def chat(req: ChatReq, request: Request):
                for h in req.history[-6:]
                if isinstance(h, dict) and h.get("role") in ("user", "assistant")
                and isinstance(h.get("content"), str)]
+    t0 = time.time()
     try:
-        answer = ask(data, history, q)
+        res = ask(data, history, q)
     except Exception as e:
         print("model error", e)
         raise HTTPException(502, "The assistant is busy right now. Please try again.")
-    return {"answer": answer}
+    ms = int((time.time() - t0) * 1000)
+    if res["unanswered"]:
+        log_unanswered(req.site_id, q)
+    return {"answer": res["answer"], "meta": answer_meta(ms, res["tokens"])}
+
+
+def model_label():
+    m = (os.getenv("MODEL_ID") or "").lower()
+    return "NVIDIA Nemotron" if "nemotron" in m else (os.getenv("MODEL_ID") or "model").split("/")[-1]
+
+
+def answer_meta(ms, tokens):
+    meta = {"model": model_label(), "host": "Nebius", "ms": ms, "tokens": tokens["in"] + tokens["out"]}
+    try:  # optional: copy real prices (US$ per 1M tokens) from Nebius's pricing page into .env
+        pin, pout = float(os.getenv("PRICE_IN_PER_M", "")), float(os.getenv("PRICE_OUT_PER_M", ""))
+        meta["cost"] = round((tokens["in"] * pin + tokens["out"] * pout) / 1_000_000, 6)
+    except ValueError:
+        pass
+    return meta
+
+
+def new_id():
+    return uuid.uuid4().hex[:10]
+
+
+def log_unanswered(sid, q):
+    """Keep questions the assistant couldn't answer, so the owner can fill the gap."""
+    data = read_own_site(sid)
+    if not data:
+        return
+    inbox = data.setdefault("inbox", [])
+    if any(i["q"].strip().lower() == q.strip().lower() for i in inbox):
+        return
+    inbox.append({"id": new_id(), "q": q[:300], "t": int(time.time())})
+    data["inbox"] = inbox[-100:]
+    save_site(sid, data)
+
+
+class OfficeReq(BaseModel):
+    token: str
+    action: str
+    q: Optional[str] = None
+    a: Optional[str] = None
+    id: Optional[str] = None
+    rules: Optional[list] = None
+
+
+def office_state(data):
+    return {"name": business_name(data),
+            "inbox": data.get("inbox") or [],
+            "corrections": data.get("corrections") or [],
+            "rules": data.get("rules") or []}
+
+
+def clean(text, limit):
+    text = " ".join(str(text or "").split())
+    if not text:
+        raise HTTPException(400, "Please write something first.")
+    return text[:limit]
+
+
+@app.post("/office/{site_id}")
+def office(site_id: str, req: OfficeReq, request: Request):
+    """Back Office: the owner's own answers, unanswered questions and house rules."""
+    rate_limit(request, "office", OFFICE_PER_HOUR, 3600)
+    if not SITE_ID_OK.fullmatch(site_id):
+        raise HTTPException(400, "Bad site id")
+    data = read_own_site(site_id)
+    if not data or not owns(data, req.token):
+        raise HTTPException(403, "Only the person who set up this assistant can open its Back Office.")
+    fixes = data.setdefault("corrections", [])
+    inbox = data.setdefault("inbox", [])
+
+    if req.action == "load":
+        return office_state(data)
+    if req.action in ("add_correction", "answer"):
+        if req.action == "answer":
+            item = next((i for i in inbox if i["id"] == req.id), None)
+            if not item:
+                raise HTTPException(404, "That question is gone. Refresh and try again.")
+            q = item["q"]
+            data["inbox"] = [i for i in inbox if i["id"] != req.id]
+        else:
+            q = clean(req.q, 300)
+            data["inbox"] = [i for i in inbox if i["q"].strip().lower() != q.strip().lower()]  # answered now
+        a = clean(req.a, 800)
+        fixes = [c for c in fixes if c["q"].strip().lower() != q.strip().lower()]
+        fixes.append({"id": new_id(), "q": q, "a": a, "t": int(time.time())})
+        data["corrections"] = fixes[-50:]
+    elif req.action == "delete_correction":
+        data["corrections"] = [c for c in fixes if c["id"] != req.id]
+    elif req.action == "dismiss":
+        data["inbox"] = [i for i in inbox if i["id"] != req.id]
+    elif req.action == "set_rules":
+        rules = [" ".join(str(r).split())[:200] for r in (req.rules or []) if str(r).strip()]
+        data["rules"] = rules[:15]
+    else:
+        raise HTTPException(400, "Unknown action.")
+    save_site(site_id, data)
+    return office_state(data)
+
+
+@app.get("/health")
+def health():
+    return {"ok": True}
+
+
+@app.get("/config")
+def config():
+    """Public settings for our own pages. Set REPO_URL in .env / Render to show the GitHub link."""
+    return {"repo": os.getenv("REPO_URL", "").strip()}
 
 
 @app.get("/site/{site_id}")
@@ -352,6 +467,7 @@ def site_info(site_id: str):
     return {"site": data["site"], "logo": data["logo"], "name": name,
             "tagline": tagline(data, name),
             "effect": effect,
+            "theme": data.get("theme", "auto"),
             "type": btype,
             "actions": [{"url": a["url"], "kind": a["kind"]} for a in (data.get("actions") or [])][:8],
             "brand": data.get("brand") or colors.get("brand", "#1f2328"),
