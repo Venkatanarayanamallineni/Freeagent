@@ -185,6 +185,50 @@
   @keyframes print{from{clip-path:inset(0 0 100% 0);transform:translateY(-6px)}to{clip-path:inset(0);transform:none}}
   @keyframes dots{0%{content:""}33%{content:"."}66%{content:".."}100%{content:"..."}}
 
+  /* ---------- install card ---------- */
+  .install{max-width:560px;margin-top:22px;background:var(--paper);border:1px solid var(--line);border-radius:24px;box-shadow:var(--soft);overflow:hidden;display:none}
+  .install.on{display:block;animation:slidein .7s var(--spring) both}
+  @keyframes slidein{from{opacity:0;transform:translateY(18px)}}
+  .ins-head{display:flex;align-items:center;gap:14px;padding:20px 20px 0}
+  .ins-head .seal{width:44px;flex:none;font-size:24px}
+  .ins-head b{display:block;font:400 28px/1.05 var(--serif)}
+  .ins-head small{color:var(--muted);font-size:14.5px}
+  .tabs{display:flex;gap:4px;margin:18px 20px 0;padding:4px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+  .tabs button{flex:1;border:none;background:none;font:inherit;font-size:14px;line-height:1.25;color:var(--muted);padding:8px 10px;border-radius:999px;cursor:pointer;transition:background .3s,color .3s,box-shadow .3s}
+  .tabs button:hover{color:var(--ink)}
+  .tabs button[aria-selected=true]{background:var(--paper-2);color:var(--ink);box-shadow:0 4px 12px -4px rgba(36,33,29,.25)}
+  .tabpane{padding:18px 20px 22px;animation:fade .35s both}
+  .tabpane[hidden]{display:none}
+  .codebox{background:var(--ink);color:#E9E2D4;border-radius:16px;padding:16px 18px;font:13.5px/1.65 var(--receipt);word-break:break-all}
+  .codebox .t{color:#C9A86A}.codebox .a{color:#A9BFAE}.codebox .v{color:#E8CFAF}
+  .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .copy{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:999px;background:var(--ink);color:var(--ivory);font:inherit;font-size:14.5px;font-weight:500;padding:10px 18px;cursor:pointer;transition:background .4s,transform .3s var(--spring)}
+  .copy:hover{background:var(--skin)}
+  .copy:active{transform:scale(.97)}
+  .copy.done{background:#3E5547}
+  .ghost{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);font:inherit;font-size:14.5px;padding:9px 16px;cursor:pointer;text-decoration:none;transition:background .3s}
+  .ghost:hover{background:var(--brass-soft)}
+  .where{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+  .where > span{display:block;font-size:13px;color:var(--muted);margin-bottom:10px}
+  .plats{display:flex;flex-wrap:wrap;gap:8px}
+  .plats button{border:1px solid var(--line);background:var(--paper-2);border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;color:var(--ink);cursor:pointer;transition:all .3s}
+  .plats button:hover{border-color:rgba(36,33,29,.35)}
+  .plats button[aria-pressed=true]{background:var(--ink);color:var(--ivory);border-color:var(--ink)}
+  .howto{margin:14px 0 0;font-size:15px;line-height:1.6;min-height:1.6em}
+  .howto em{font-style:normal;background:var(--brass-soft);padding:1px 5px;border-radius:5px}
+  .howto small{display:block;margin-top:6px;color:var(--muted);font-size:13px}
+  .msg{width:100%;min-height:170px;resize:vertical;padding:12px 14px;font:14.5px/1.55 var(--sans);border:1px solid var(--line);border-radius:14px;background:var(--paper-2);color:var(--ink)}
+  .frame{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--paper-2)}
+  .frame iframe{display:block;width:100%;height:420px;border:0;background:var(--bg)}
+
+  /* ---------- story business switcher ---------- */
+  .pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .pills button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:5px 13px;font:inherit;font-size:13.5px;color:var(--muted);cursor:pointer;transition:all .3s}
+  .pills button:hover{color:var(--ink);border-color:rgba(36,33,29,.3)}
+  .pills button[aria-pressed=true]{background:var(--ink);color:var(--ivory);border-color:var(--ink)}
+  .mock-in{transition:opacity .35s}
+  .mock.swap .mock-in{opacity:0}
+
   /* ---------- scroll story ---------- */
   .story{max-width:1200px;margin:0 auto;padding:40px 24px;display:grid;grid-template-columns:1.15fr .85fr;gap:56px}
   .stage-wrap{position:sticky;top:90px;height:calc(100vh - 130px);display:flex;align-items:center}
@@ -296,7 +340,7 @@
         <span class="w" style="--d:3">now&nbsp;taking</span>
         <span class="w" style="--d:4">questions.</span>
       </h1>
-      <p class="lead">Paste a link. We read every page, every PDF menu, every bit of fine print. Your customers get answers in seconds, in your voice, not ours.</p>
+      <p class="lead">Paste a link. We read every page, every PDF, every bit of fine print. Your customers get answers in seconds, in your voice, not ours.</p>
 
       <form id="f" novalidate>
         <div class="door">
@@ -353,6 +397,35 @@
         <div class="slot"></div>
         <div class="receipt" id="receipt"></div>
       </div>
+
+      <section class="install" id="install" aria-label="Install your assistant">
+        <div class="ins-head">
+          <span class="seal mono-on" id="insSeal" aria-hidden="true"><span class="mono" id="insMono"></span></span>
+          <div><b>Your assistant is hired.</b><small id="insSub">Here's how to put it to work.</small></div>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Install options">
+          <button role="tab" id="t1" aria-controls="p1" aria-selected="true">Add it myself</button>
+          <button role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">Send to my developer</button>
+          <button role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">Preview</button>
+        </div>
+        <div class="tabpane" id="p1" role="tabpanel" aria-labelledby="t1">
+          <div class="codebox" id="codebox"></div>
+          <div class="btns"><button class="copy" id="copyCode" type="button">Copy code</button></div>
+          <div class="where">
+            <span>Where does it go?</span>
+            <div class="plats" id="plats"></div>
+            <p class="howto" id="howto">Pick your site builder for the exact steps.</p>
+          </div>
+        </div>
+        <div class="tabpane" id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+          <textarea class="msg" id="msg" aria-label="Message for your developer"></textarea>
+          <div class="btns"><button class="copy" id="copyMsg" type="button">Copy message</button><a class="ghost" id="mailMsg" href="#">Open in email</a></div>
+        </div>
+        <div class="tabpane" id="p3" role="tabpanel" aria-labelledby="t3" hidden>
+          <div class="frame"><div class="mock-bar"><span id="frameUrl">preview</span></div><iframe id="frame" title="Preview of your assistant"></iframe></div>
+          <div class="btns"><a class="ghost" id="openPrev" target="_blank" rel="noopener">Open full preview ↗</a></div>
+        </div>
+      </section>
     </div>
 
     <div class="stage-hero" id="stageHero" aria-hidden="true">
@@ -372,36 +445,28 @@
   <!-- ================= SCROLL STORY ================= -->
   <section class="story" id="how">
     <div class="stage-wrap">
-      <div class="stage" id="stage" aria-hidden="true">
-        <div class="mock">
-          <div class="mock-bar"><span>yourbusiness.com</span></div>
+      <div class="stage" id="stage">
+        <div class="pills" id="pills" role="group" aria-label="Show it as"></div>
+        <div class="mock" id="mock" aria-hidden="true">
+          <div class="mock-bar"><span id="mUrl"></span></div>
           <div class="mock-body">
-            <h4>Your business</h4>
-            <p class="tag">Open daily, 7 am to 9 pm</p>
-            <div class="rows">
-              <div class="rowi" style="--i:0"><span>Breakfast</span><span>$6+</span></div>
-              <div class="rowi" style="--i:1"><span>Lunch</span><span>$11+</span></div>
-              <div class="rowi" style="--i:2"><span>Catering</span><span>Call us</span></div>
-              <div class="rowi" style="--i:3"><span>Gift cards</span><span>$25</span></div>
-              <div class="rowi" style="--i:4"><span>Contact</span><span>Page</span></div>
+            <div class="mock-in">
+              <h4 id="mTitle"></h4>
+              <p class="tag" id="mTag"></p>
+              <div class="rows" id="mRows"></div>
+              <div class="pdf" id="mPdf"></div>
+              <div class="mchat">
+                <p class="u" id="mQ"></p>
+                <p class="b" id="mA"></p>
+                <p class="chip" id="mChip"></p>
+              </div>
+              <span class="counter" id="counter">Reading pages… 0</span>
             </div>
-            <div class="pdf">
-              <b><svg class="i" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>menu.pdf</b>
-              <div><span>Pizza</span><em>$18.95</em></div>
-              <div><span>Burger</span><em>$16.99</em></div>
-              <div><span>Lemonade</span><em>$4</em></div>
-            </div>
-            <div class="mchat">
-              <p class="u">How much is a pizza?</p>
-              <p class="b">Our pizza is $18.95. Want the rest of the dinner menu?</p>
-              <p class="chip">View PDF ↗</p>
-            </div>
-            <span class="counter" id="counter">Reading pages… 0</span>
             <div class="scan"></div>
           </div>
           <svg class="flow" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M30 45 C 55 45, 70 70, 96 98"/></svg>
         </div>
-        <div class="seal mini" id="mini"><svg class="glyph" viewBox="0 0 24 24"><path d="M4 5h16v10H10l-5 4v-4H4z"/><path d="M8 10h8"/></svg><svg class="think" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48"/></svg></div>
+        <div class="seal mini" id="mini" aria-hidden="true"><svg class="glyph" id="miniGlyph" viewBox="0 0 24 24"></svg><svg class="think" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48"/></svg></div>
       </div>
     </div>
 
@@ -413,8 +478,8 @@
       </article>
       <article data-step="2">
         <div class="num">then,</div>
-        <h3>Yes, even the PDF menu.</h3>
-        <p>That price list you uploaded in 2019 and forgot about? Read, line by line.</p>
+        <h3>Yes, even the PDFs.</h3>
+        <p>Menus, price lists, class schedules, size guides. The one you uploaded in 2019 and forgot about? Read, line by line.</p>
       </article>
       <article data-step="3">
         <div class="num">finally,</div>
@@ -466,6 +531,7 @@ const ICONS = {
   hanger:  P("M10.4 5.2A1.7 1.7 0 1 1 12 7v1.2") + P("M12 8.2 3 14.5h18z") + P("M5 14.5v5h14v-5"),
   sparkle: P("M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z") + P("M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"),
   check:   P("M5 12.5l4.5 4.5L19 7.5"),
+  leaf:    P("M5 19.5c0-8.5 6-14.5 15-14.5 0 9-6 15-14.5 15") + P("M5 19.5 13.5 11"),
 };
 const SYM_TO_EMOJI = { coffee: "☕", book: "📚", polish: "💅", pizza: "🍕", hanger: "👗", sparkle: "✦" };
 const EMOJI_TO_SYM = Object.fromEntries(Object.entries(SYM_TO_EMOJI).map(([k, v]) => [v, k]));
@@ -496,11 +562,36 @@ document.querySelectorAll('input[name=color]').forEach(r => r.addEventListener("
 
 /* ---------- 1. the emblem changes with each business ---------- */
 const skins = [
-  { word: "café's",      c: "#6B4A3A", l: "#C9B8A8", icon: "coffee", say: "Oat latte, $5.25. Shall I save you a croissant?" },
-  { word: "bookstore's", c: "#2E3A4F", l: "#B9C0CA", icon: "book",   say: "The mystery shelf just got restocked. Something under $15?" },
-  { word: "salon's",     c: "#8E636A", l: "#D3C0BF", icon: "polish", say: "Gel manicure, $45. Saturday still has room." },
-  { word: "pizzeria's",  c: "#7A3B2E", l: "#CDB3A9", icon: "pizza",  say: "Large pepperoni, $21. Pickup, or are we dining in?" },
-  { word: "boutique's",  c: "#3E5547", l: "#B9C5BA", icon: "hanger", say: "The linen set comes in sand and ink. Want the link?" },
+  { label: "Café", word: "café's", c: "#6B4A3A", l: "#C9B8A8", icon: "coffee", say: "Oat latte, $5.25. Shall I save you a croissant?",
+    st: { url: "junipercafe.example", title: "Juniper Café", tag: "Open daily, 7 am to 3 pm",
+      rows: [["Breakfast", "$6+"], ["Lunch", "$11+"], ["Catering", "Call us"], ["Gift cards", "$25"], ["Contact", "Page"]],
+      pdf: "menu.pdf", pdfRows: [["Oat latte", "$5.25"], ["Croissant", "$4"], ["Avocado toast", "$11"]],
+      q: "How much is an oat latte?", a: "Our oat latte is $5.25. Want the full drinks menu?", chip: "View PDF ↗" } },
+  { label: "Bookstore", word: "bookstore's", c: "#2E3A4F", l: "#B9C0CA", icon: "book", say: "The mystery shelf just got restocked. Something under $15?",
+    st: { url: "folioandfinch.example", title: "Folio & Finch Books", tag: "Open 10 am to 8 pm",
+      rows: [["New arrivals", "Weekly"], ["Used books", "Half off"], ["Book club", "Thursdays"], ["Gift cards", "$20+"], ["Events", "Page"]],
+      pdf: "events.pdf", pdfRows: [["Author talk", "Oct 18"], ["Story hour", "Sat 10 am"], ["Poetry night", "Fri 7 pm"]],
+      q: "Anything happening this weekend?", a: "Kids story hour is Saturday at 10 am. Want the full events list?", chip: "View PDF ↗" } },
+  { label: "Salon", word: "salon's", c: "#8E636A", l: "#D3C0BF", icon: "polish", say: "Gel manicure, $45. Saturday still has room.",
+    st: { url: "lumennails.example", title: "Lumen Nail Studio", tag: "Tuesday to Saturday, 9 am to 6 pm",
+      rows: [["Manicures", "$32+"], ["Pedicures", "$44+"], ["Gel", "$45+"], ["Waxing", "$12+"], ["Booking", "Online"]],
+      pdf: "price-list.pdf", pdfRows: [["Gel manicure", "$45"], ["Spa pedicure", "$58"], ["Nail art", "$5+"]],
+      q: "How much is a gel manicure?", a: "Our gel manicure is $45. Want me to open booking?", chip: "Book now ↗" } },
+  { label: "Pizzeria", word: "pizzeria's", c: "#7A3B2E", l: "#CDB3A9", icon: "pizza", say: "Large pepperoni, $21. Pickup, or are we dining in?",
+    st: { url: "emberpizza.example", title: "Ember Pizza Co.", tag: "Open 11 am to 10 pm",
+      rows: [["Pizzas", "$14+"], ["Salads", "$7+"], ["Sides", "$5+"], ["Delivery", "Online"], ["Catering", "Call us"]],
+      pdf: "menu.pdf", pdfRows: [["Margherita", "$16"], ["Large pepperoni", "$21"], ["Garlic knots", "$6"]],
+      q: "How much is a large pepperoni?", a: "Our large pepperoni is $21. Pickup or delivery?", chip: "Order online ↗" } },
+  { label: "Yoga studio", word: "studio's", c: "#4A5D6B", l: "#BCC6CC", icon: "leaf", say: "Your first class is on us. Tomorrow's 7 am flow has room.",
+    st: { url: "stillwateryoga.example", title: "Stillwater Yoga", tag: "Classes from 6 am",
+      rows: [["Drop-in", "$22"], ["10-class pack", "$180"], ["Beginners", "Mon & Wed"], ["Mat rental", "$3"], ["Schedule", "Page"]],
+      pdf: "schedule.pdf", pdfRows: [["Vinyasa", "Mon 6 pm"], ["Yin", "Wed 7 pm"], ["Hot flow", "Sat 9 am"]],
+      q: "Do you have beginner classes?", a: "Yes, Mondays and Wednesdays, and your first class is free. Want to book?", chip: "Book now ↗" } },
+  { label: "Boutique", word: "boutique's", c: "#3E5547", l: "#B9C5BA", icon: "hanger", say: "The linen set comes in sand and ink. Want the link?",
+    st: { url: "sableandlinen.example", title: "Sable & Linen", tag: "Open daily, 11 am to 7 pm",
+      rows: [["Dresses", "$68+"], ["Linen sets", "$120"], ["Accessories", "$18+"], ["Returns", "30 days"], ["Sizes", "Guide"]],
+      pdf: "size-guide.pdf", pdfRows: [["Small", "2 to 4"], ["Medium", "6 to 8"], ["Large", "10 to 12"]],
+      q: "Do you take returns?", a: "Yes, within 30 days with a receipt. Want the size guide too?", chip: "View PDF ↗" } },
 ];
 let skinIdx = 0, paused = false;
 function setSkin(s) {
@@ -542,7 +633,109 @@ const io = new IntersectionObserver(entries => {
 }, { rootMargin: "-45% 0px -45% 0px" });
 document.querySelectorAll(".beats article").forEach(a => io.observe(a));
 
+/* ---------- 3b. the mock website switches business ---------- */
+const PDF_ICON = '<svg class="i" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>';
+const pills = $("pills"), mock = $("mock");
+pills.innerHTML = skins.map((k, i) => `<button type="button" aria-pressed="${i === 0}" data-i="${i}">${k.label}</button>`).join("");
+let storyIdx = 0, storyPicked = false, storyVisible = false;
+function setMock(i, animate = true) {
+  storyIdx = i;
+  const k = skins[i], st = k.st;
+  const apply = () => {
+    $("mUrl").textContent = st.url; $("mTitle").textContent = st.title; $("mTag").textContent = st.tag;
+    $("mRows").innerHTML = st.rows.map(([a, b], n) => `<div class="rowi" style="--i:${n}"><span>${a}</span><span>${b}</span></div>`).join("");
+    $("mPdf").innerHTML = `<b>${PDF_ICON}${st.pdf}</b>` + st.pdfRows.map(([a, b]) => `<div><span>${a}</span><em>${b}</em></div>`).join("");
+    $("mQ").textContent = st.q; $("mA").textContent = st.a; $("mChip").textContent = st.chip;
+    $("miniGlyph").innerHTML = ICONS[k.icon];
+    stage.style.setProperty("--skin", k.c);
+    pills.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.i === i)));
+    const c = stage.className; stage.className = "stage"; void stage.offsetWidth; stage.className = c;  // replay the current step
+  };
+  if (!animate || calm) return apply();
+  mock.classList.add("swap");
+  setTimeout(() => { apply(); mock.classList.remove("swap"); }, 350);
+}
+pills.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { storyPicked = true; setMock(+b.dataset.i); } });
+setMock(0, false);
+new IntersectionObserver(([en]) => { storyVisible = en.isIntersecting; }, { threshold: .15 }).observe($("how"));
+if (!calm) setInterval(() => { if (storyVisible && !storyPicked) setMock((storyIdx + 1) % skins.length); }, 6500);
+
 $("again").onclick = () => { scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" }); setTimeout(() => $("url").focus(), calm ? 0 : 600); };
+
+/* ---------- 4a. install card ---------- */
+const CHECK = '<svg class="i" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const PLATS = [
+  ["Wix", "In your dashboard: <em>Settings → Custom code → Add custom code</em>. Paste it, pick <em>Body - end</em> and <em>All pages</em>. Needs a paid Wix plan."],
+  ["Squarespace", "Open <em>Code injection</em> (search for it in Settings), paste into <em>Footer</em>, save. Works on most paid plans."],
+  ["WordPress", "Add a free header and footer plugin like <em>WPCode</em>, paste into the <em>Footer</em> box, save."],
+  ["Shopify", "<em>Online Store → Themes → ⋯ → Edit code</em>, open <em>theme.liquid</em>, paste right above <em>&lt;/body&gt;</em>, save."],
+  ["Webflow", "<em>Site settings → Custom code</em>, paste into <em>Footer code</em>, then publish."],
+  ["Something else", "Paste it right above <em>&lt;/body&gt;</em> on every page. That's the whole job."],
+];
+const plats = $("plats");
+plats.innerHTML = PLATS.map(([n], i) => `<button type="button" aria-pressed="false" data-i="${i}">${n}</button>`).join("");
+plats.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  plats.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  $("howto").innerHTML = PLATS[b.dataset.i][1] + "<small>Menus move around sometimes. If it's hiding, search for “custom code”.</small>";
+});
+
+const tabs = [...document.querySelectorAll(".tabs [role=tab]")];
+function openTab(t) {
+  tabs.forEach(x => {
+    const on = x === t;
+    x.setAttribute("aria-selected", String(on)); x.tabIndex = on ? 0 : -1;
+    $(x.getAttribute("aria-controls")).hidden = !on;
+  });
+  const fr = $("frame");
+  if (t.id === "t3" && !fr.getAttribute("src") && fr.dataset.src) fr.src = fr.dataset.src;  // load preview only when asked
+}
+tabs.forEach((t, i) => {
+  t.addEventListener("click", () => openTab(t));
+  t.addEventListener("keydown", e => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+    n.focus(); openTab(n);
+  });
+});
+
+async function copyText(btn, text, label) {
+  try { await navigator.clipboard.writeText(text); }
+  catch { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
+  btn.classList.add("done"); btn.innerHTML = CHECK + "Copied";
+  setTimeout(() => { btn.classList.remove("done"); btn.textContent = label; }, 1800);
+}
+
+function showInstall(sid, info, name) {
+  const src = `${location.origin}/static/widget.js`;
+  const code = `<script src="${src}" data-site="${sid}"><\/script>`;
+  const prevUrl = `${location.origin}/static/preview.html?site=${sid}`;
+
+  const box = $("codebox"); box.textContent = "";
+  const sp = (cls, t) => { const e = document.createElement("span"); if (cls) e.className = cls; e.textContent = t; box.appendChild(e); };
+  sp("t", "<script "); sp("a", "src"); sp("", "="); sp("v", `"${src}"`); sp("", " ");
+  sp("a", "data-site"); sp("", "="); sp("v", `"${sid}"`); sp("t", "><\/script>");
+  $("copyCode").onclick = () => copyText($("copyCode"), code, "Copy code");
+
+  $("msg").value = `Hi! Could you add our new website assistant?\n\nIt's one line. Please paste it right before </body> on every page:\n\n${code}\n\nYou can see it working here: ${prevUrl}\n\nThank you!`;
+  const mail = () => { $("mailMsg").href = `mailto:?subject=${encodeURIComponent("One line for our website")}&body=${encodeURIComponent($("msg").value)}`; };
+  mail(); $("msg").oninput = mail;
+  $("copyMsg").onclick = () => copyText($("copyMsg"), $("msg").value, "Copy message");
+
+  const fr = $("frame"); fr.removeAttribute("src"); fr.dataset.src = prevUrl + "&open=1";
+  $("frameUrl").textContent = (info.site || "").replace(/^https?:\/\//, "").replace(/\/$/, "") || "preview";
+  $("openPrev").href = prevUrl;
+
+  $("insSub").textContent = `${name} has a new front desk. Two minutes to install.`;
+  $("insMono").textContent = name.trim().charAt(0).toUpperCase();
+  if (info.brand) $("insSeal").style.setProperty("--c", info.brand);
+  plats.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
+  $("howto").textContent = "Pick your site builder for the exact steps.";
+  openTab(tabs[0]);
+
+  const card = $("install"); card.classList.remove("on"); void card.offsetWidth; card.classList.add("on");
+  setTimeout(() => card.scrollIntoView({ behavior: calm ? "auto" : "smooth", block: "nearest" }), 250);
+}
 
 /* ---------- 4. hire: receipt prints, emblem reacts ---------- */
 const receipt = $("receipt");
@@ -575,7 +768,7 @@ $("f").addEventListener("submit", async e => {
   paused = true; mood(seal, "thinking");
   $("say").textContent = "Reading your site. All of it.";
   $("go").disabled = true; $("go").textContent = "Onboarding…";
-  receipt.textContent = ""; $("printer").classList.add("on");
+  receipt.textContent = ""; $("printer").classList.add("on"); $("install").classList.remove("on");
   const head = document.createElement("div"); head.className = "r-head r-note";
   const hb = document.createElement("b"); hb.textContent = "FREEAGENT"; head.append(hb, new Date().toLocaleString());
   receipt.appendChild(head);
@@ -624,15 +817,9 @@ $("f").addEventListener("submit", async e => {
   await sleep(250); line("LOGO", res.d.logo ? "FOUND" : "NONE");
   rule();
   await sleep(250); line("TOTAL", "1 LINE OF CODE");
-  const code = `<script src="${location.origin}/static/widget.js" data-site="${sid}"><\/script>`;
-  await sleep(250); note(code, "r-code");
-  note("Paste it right before </body> on your site.");
-  const act = document.createElement("div"); act.className = "r-actions";
-  const copy = document.createElement("button"); copy.type = "button"; copy.textContent = "Copy code";
-  copy.onclick = async () => { try { await navigator.clipboard.writeText(code); copy.textContent = "Copied"; } catch { copy.textContent = "Select and copy"; } };
-  const prev = document.createElement("a"); prev.href = `/static/preview.html?site=${sid}`; prev.target = "_blank"; prev.textContent = "Open preview";
-  act.append(copy, prev); receipt.appendChild(act);
+  await sleep(250); note("INSTALL CARD BELOW");
   await sleep(250); note("THANK YOU, COME AGAIN", "r-thanks");
+  showInstall(sid, info, name);
 
   // their real assistant appears on this page
   document.getElementById("fa-root")?.remove();

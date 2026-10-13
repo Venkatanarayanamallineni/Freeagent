@@ -1,14 +1,87 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><title>Preview</title></head>
-<body style="font-family:sans-serif;padding:40px">
-  <h1>Preview</h1>
-  <p>This is how the chat bubble looks on your site. Click it bottom-right.</p>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview · FreeAgent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#DCD7CE;--paper:#ECE8E1;--ink:#24211D;--muted:#605A51;--line:rgba(36,33,29,.14);--brand:#6B4A3A}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:16px/1.6 "Geist",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .note{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:10px;
+    background:rgba(236,232,225,.9);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:13.5px;color:var(--muted);
+    box-shadow:0 12px 30px -16px rgba(36,33,29,.4);white-space:nowrap}
+  .note i{width:7px;height:7px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 22%,transparent)}
+  /* a quiet stand-in for the business's real site */
+  .site{max-width:960px;margin:0 auto;padding:70px 24px 120px}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding-bottom:22px;border-bottom:1px solid var(--line)}
+  .brand{font:400 26px/1 "Instrument Serif",Georgia,serif}
+  .links{display:flex;gap:18px}
+  .links span{width:54px;height:9px;border-radius:9px;background:rgba(36,33,29,.12)}
+  .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:center;padding:48px 0}
+  h1{font:400 clamp(36px,6vw,64px)/1 "Instrument Serif",Georgia,serif;margin:0 0 16px}
+  h1 em{color:var(--brand)}
+  .lines span{display:block;height:10px;border-radius:10px;background:rgba(36,33,29,.1);margin:10px 0}
+  .img{aspect-ratio:4/5;border-radius:22px;background:linear-gradient(160deg,color-mix(in srgb,var(--brand) 55%,#fff),var(--brand));opacity:.85}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px}
+  .card b{display:block;width:60%;height:12px;border-radius:12px;background:rgba(36,33,29,.18);margin-bottom:14px}
+  .shimmer{background-image:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);background-size:200% 100%;animation:sh 2.4s linear infinite}
+  @keyframes sh{from{background-position:200% 0}to{background-position:-200% 0}}
+  .err{max-width:520px;margin:30vh auto 0;padding:0 24px;text-align:center}
+  .err h2{font:400 34px/1.1 "Instrument Serif",Georgia,serif;margin:0 0 8px}
+  .err a{color:var(--ink)}
+  @media (max-width:700px){.hero{grid-template-columns:1fr}.img{display:none}.cards{grid-template-columns:1fr}.links{display:none}}
+  @media (prefers-reduced-motion:reduce){.shimmer{animation:none}}
+</style>
+</head>
+<body>
+<div class="note"><i></i><span id="noteText">Preview. Your real site goes here. Your assistant lives bottom right.</span></div>
+
+<main class="site" id="site" aria-hidden="true">
+  <div class="nav"><div class="brand" id="brand">Your business</div><div class="links"><span></span><span></span><span></span></div></div>
+  <div class="hero">
+    <div>
+      <h1>Welcome to <em id="hname">your business</em>.</h1>
+      <div class="lines"><span class="shimmer" style="width:92%"></span><span class="shimmer" style="width:78%"></span><span class="shimmer" style="width:64%"></span></div>
+    </div>
+    <div class="img"></div>
+  </div>
+  <div class="cards">
+    <div class="card"><b></b><div class="lines"><span class="shimmer"></span><span class="shimmer" style="width:70%"></span></div></div>
+    <div class="card"><b></b><div class="lines"><span class="shimmer"></span><span class="shimmer" style="width:80%"></span></div></div>
+    <div class="card"><b></b><div class="lines"><span class="shimmer"></span><span class="shimmer" style="width:60%"></span></div></div>
+  </div>
+</main>
+
 <script>
-  const s = document.createElement("script");
-  s.src = "/static/widget.js";
-  s.dataset.site = new URLSearchParams(location.search).get("site");
-  document.body.appendChild(s);
+const params = new URLSearchParams(location.search);
+const site = params.get("site");
+if (!site || !/^[a-z0-9_\-]{1,100}$/.test(site)) {
+  document.body.innerHTML = '<div class="err"><h2>Nothing to preview yet.</h2><p>Set up an assistant first, then come back. <a href="/">Go to setup</a></p></div>';
+} else {
+  fetch(`/site/${site}`).then(r => r.ok ? r.json() : Promise.reject()).then(d => {
+    const name = d.name || "your business";
+    document.getElementById("brand").textContent = name;
+    document.getElementById("hname").textContent = name;
+    document.title = `${name} · Preview`;
+    if (d.brand) document.documentElement.style.setProperty("--brand", d.brand);
+  }).catch(() => {
+    document.getElementById("noteText").textContent = "We couldn't find this assistant. It may need to be set up again.";
+  });
+
+  const w = document.createElement("script");
+  w.src = "/static/widget.js";
+  w.dataset.site = site;
+  if (params.get("open") === "1") {
+    // inside the install card: open the chat so it shows right away
+    w.onload = () => setTimeout(() => document.getElementById("fa-bubble")?.click(), 900);
+  }
+  document.body.appendChild(w);
+}
 </script>
 </body>
 </html>
