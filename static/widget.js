@@ -29,6 +29,8 @@
     flower: C(12, 7.5, 2.8) + C(7.8, 11, 2.8) + C(16.2, 11, 2.8) + C(9.5, 15.5, 2.8) + C(14.5, 15.5, 2.8) + C(12, 11.8, 1.4),
     chat: P("M4 5h16v10H10l-5 4v-4H4z"),
     mic: P("M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z") + P("M5.5 11a6.5 6.5 0 0 0 13 0") + P("M12 17.5V21"),
+    sun: C(12, 12, 4) + P("M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"),
+    moon: P("M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"),
     speaker: P("M4 9.5h3.5L12 6v12l-4.5-3.5H4z") + P("M15.5 9a4 4 0 0 1 0 6") + P("M18 6.5a7.5 7.5 0 0 1 0 11"),
     send: P("M4 12l16-8-6 16-2.5-6.5z") + P("M11.5 13.5 20 4"),
     cal: P("M4 6h16v14H4z") + P("M4 10h16") + P("M8 3.5v4M16 3.5v4"),
@@ -106,7 +108,10 @@
   .fa-hbtn{background:none;border:none;color:#fff;cursor:pointer;opacity:.7;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:16px;transition:opacity .2s,background .2s}
   .fa-hbtn:hover{opacity:1;background:rgba(255,255,255,.12)}
   .fa-hbtn[aria-pressed=true]{opacity:1;background:rgba(255,255,255,.2)}
-  #fa-spk{margin-left:auto}
+  #fa-mode{margin-left:auto}
+  #fa-mode .fa-sun{display:none}
+  #fa-root.fa-night #fa-mode .fa-sun{display:block}
+  #fa-root.fa-night #fa-mode .fa-moon{display:none}
   #fa-close{font-size:22px}
 
   /* ---------- avatar states: idle / listening / thinking / answering ---------- */
@@ -180,8 +185,9 @@
       <div id="fa-head">
         <div id="fa-avatar"><div class="fa-logo">${svg("chat")}</div></div>
         <div><div id="fa-title">Ask us anything</div><div id="fa-sub">Happy to help</div></div>
+        <button class="fa-hbtn" id="fa-mode" aria-label="Switch to dark" title="Light or dark">${svg("moon", "fa-moon")}${svg("sun", "fa-sun")}</button>
         ${canSpeak ? `<button class="fa-hbtn" id="fa-spk" aria-pressed="false" aria-label="Read answers aloud" title="Read answers aloud">${svg("speaker")}</button>` : ""}
-        <button class="fa-hbtn" id="fa-close" aria-label="Close"${canSpeak ? "" : ' style="margin-left:auto"'}>×</button>
+        <button class="fa-hbtn" id="fa-close" aria-label="Close">×</button>
       </div>
       <div id="fa-msgs" aria-live="polite"></div>
       <div id="fa-row">
@@ -202,16 +208,23 @@
   let state = "idle";
 
   /* ---------- light / dark ---------- */
-  let ownerTheme = "auto", pageTheme = "";
+  let ownerTheme = "auto", pageTheme = "", visitorTheme = "";
+  try { const v = localStorage.getItem("fa_chat_theme"); if (v === "light" || v === "dark") visitorTheme = v; } catch (e) {}
   const nightQuery = window.matchMedia ? matchMedia("(prefers-color-scheme: dark)") : null;
   function applyTheme() {
-    const night = ownerTheme === "dark" || (ownerTheme === "auto" && (pageTheme ? pageTheme === "dark" : !!(nightQuery && nightQuery.matches)));
+    // the visitor's own choice wins, then the owner's default, then the page or device
+    const night = visitorTheme ? visitorTheme === "dark"
+      : ownerTheme !== "auto" ? ownerTheme === "dark"
+      : pageTheme ? pageTheme === "dark" : !!(nightQuery && nightQuery.matches);
     root.classList.toggle("fa-night", night);
+    const mode = root.querySelector("#fa-mode");
+    if (mode) mode.setAttribute("aria-label", night ? "Switch to light" : "Switch to dark");
   }
   nightQuery?.addEventListener?.("change", applyTheme);
   // our own landing page tells the chat when its light/dark switch changes
   window.addEventListener("fa-theme", e => { pageTheme = e.detail === "dark" || e.detail === "light" ? e.detail : ""; applyTheme(); });
   if (s.dataset.theme) pageTheme = s.dataset.theme;
+  applyTheme();
 
   function setState(st) {
     state = st;
@@ -329,6 +342,11 @@
     u.rate = 0.98;
     speechSynthesis.speak(u);
   }
+  root.querySelector("#fa-mode").onclick = () => {
+    visitorTheme = root.classList.contains("fa-night") ? "light" : "dark";
+    try { localStorage.setItem("fa_chat_theme", visitorTheme); } catch (e) {}
+    applyTheme();
+  };
   if (spk) spk.onclick = () => {
     readAloud = !readAloud;
     spk.setAttribute("aria-pressed", String(readAloud));

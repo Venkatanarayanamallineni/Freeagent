@@ -6,7 +6,7 @@ from pypdf import PdfReader
 
 MAX_PAGES = 50
 MAX_ACTIONS = 8
-HEADERS = {"User-Agent": "FreeAgentBot"}
+HEADERS = {"User-Agent": "say2Bot/1.0"}
 
 # words on a link that mean "book / reserve / order"
 ACTION_TEXT = re.compile(r"\b(book( now| online| an? appointment| a table)?|reserve( now| a table)?|reservations?|"

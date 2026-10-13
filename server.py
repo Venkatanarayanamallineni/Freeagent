@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 import requests
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from pydantic import BaseModel
@@ -111,7 +111,7 @@ def logo_colors(url):
         return BRAND_CACHE[url]
     out = None
     try:
-        r = requests.get(url, timeout=8, headers={"User-Agent": "FreeAgentBot"})
+        r = requests.get(url, timeout=8, headers={"User-Agent": "say2Bot/1.0"})
         img = Image.open(io.BytesIO(r.content)).convert("RGBA")
         img.thumbnail((96, 96))
         allpx = list(img.getdata())
@@ -434,6 +434,11 @@ def office(site_id: str, req: OfficeReq, request: Request):
         raise HTTPException(400, "Unknown action.")
     save_site(site_id, data)
     return office_state(data)
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return FileResponse("static/brand/favicon.ico")
 
 
 @app.get("/health")

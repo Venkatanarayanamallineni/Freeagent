@@ -3,62 +3,279 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Privacy &amp; terms · FreeAgent</title>
+<title>Privacy &amp; terms · say2</title>
+<link rel="icon" href="/static/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/brand/say2_icon_32.png">
+<link rel="apple-touch-icon" href="/static/brand/say2_icon_180.png">
+<script>
+  let t = "dark"; try { const v = localStorage.getItem("fa_theme"); if (v === "light") t = "light"; } catch (e) {}
+  document.documentElement.dataset.theme = t;
+  if (t === "dark") document.documentElement.setAttribute("data-dark", "");
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#DCD7CE;--paper:#ECE8E1;--ink:#24211D;--muted:#5B554C;--line:rgba(36,33,29,.14)}
+  :root{
+    --bg:#DCD7CE;--paper:#ECE8E1;--paper-2:#F5F2ED;
+    --ink:#24211D;--muted:#5B554C;--line:rgba(36,33,29,.14);
+    --header:rgba(220,215,206,.78);--brass:#A88B5A;--brass-soft:rgba(168,139,90,.24);
+    --glow:#CDBFB2;--glow-op:.55;--grain:.05;--accent:#6B4A3A;
+    --serif:"Instrument Serif",Georgia,serif;--sans:"Geist",system-ui,sans-serif;
+    --soft:0 24px 48px -28px rgba(36,33,29,.4),0 2px 6px rgba(36,33,29,.06);
+  }
+  :root[data-theme=dark]{
+    --bg:#15130F;--paper:#1F1C18;--paper-2:#28241F;
+    --ink:#EFE8DC;--muted:#A9A194;--line:rgba(239,232,220,.12);
+    --header:rgba(21,19,15,.8);--brass:#C4A56C;--brass-soft:rgba(196,165,108,.22);
+    --glow:#6B4A3A;--glow-op:.32;--grain:.07;--accent:#D9B9A4;
+    --soft:0 24px 48px -28px rgba(0,0,0,.7),0 2px 6px rgba(0,0,0,.3);
+  }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 "Geist",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-  main{max-width:680px;margin:0 auto;padding:56px 24px 96px}
-  a{color:var(--ink)}
-  .back{font-size:15px;color:var(--muted)}
-  h1{font:400 clamp(40px,6vw,60px)/1.05 "Instrument Serif",Georgia,serif;margin:18px 0 8px}
-  .date{color:var(--muted);font-size:15px;margin:0 0 36px}
-  h2{font:400 28px/1.2 "Instrument Serif",Georgia,serif;margin:36px 0 8px}
-  p,li{color:#36322C}
-  ul{padding-left:20px}
-  .box{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px;margin-top:28px}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .4s,color .4s}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:8px}
+  svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.14em;flex:none}
+
+  /* background */
+  .ambient{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+  .ambient i{position:absolute;border-radius:50%;filter:blur(100px)}
+  .ambient i:nth-child(1){width:55vw;height:55vw;left:-14vw;top:-16vw;background-color:var(--glow);opacity:var(--glow-op)}
+  .ambient i:nth-child(2){width:40vw;height:40vw;right:-12vw;top:40vh;background-color:var(--brass);opacity:.1}
+  .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:var(--grain);
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+  /* header */
+  .top{position:sticky;top:0;z-index:50;background:var(--header);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .bar{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .mark{display:flex;align-items:center;gap:10px;font:400 26px/1 var(--serif);text-decoration:none}
+  .mark img{display:block;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+  .logo-d{display:none!important}
+  [data-dark] .logo-l{display:none!important}
+  [data-dark] .logo-d{display:block!important}
+  .bar nav{display:flex;align-items:center;gap:22px;font-size:15px}
+  .bar nav a{text-decoration:none;color:var(--muted);transition:color .3s}
+  .bar nav a:hover{color:var(--ink)}
+  .theme{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;font-size:16px;transition:background .3s}
+  .theme:hover{background:var(--brass-soft)}
+  .theme .moon,[data-dark] .theme .sun{display:none}
+  [data-dark] .theme .moon{display:block}
+
+  /* intro */
+  .intro{max-width:1100px;margin:0 auto;padding:72px 24px 40px}
+  .kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);margin:0 0 14px}
+  h1{font:400 clamp(52px,7vw,96px)/.95 var(--serif);letter-spacing:-.02em;margin:0 0 18px}
+  h1 em{color:var(--accent)}
+  .lead{font-size:19px;color:var(--muted);max-width:46ch;margin:0}
+  .rise{animation:rise .7s cubic-bezier(.22,1.2,.36,1) both;animation-delay:calc(var(--d,0) * 70ms)}
+  @keyframes rise{from{opacity:0;transform:translateY(20px)}}
+
+  /* short version */
+  .short{max-width:1100px;margin:0 auto;padding:0 24px 56px}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--soft)}
+  .card svg{font-size:22px;color:var(--brass);margin-bottom:10px}
+  .card b{display:block;font:400 24px/1.15 var(--serif);margin-bottom:6px}
+  .card p{margin:0;font-size:15px;color:var(--muted);line-height:1.55}
+
+  /* body */
+  .doc{max-width:1100px;margin:0 auto;padding:0 24px 110px;display:grid;grid-template-columns:220px 1fr;gap:56px;align-items:start}
+  .toc{position:sticky;top:90px;font-size:14.5px}
+  .toc p{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  .toc a{display:block;padding:6px 0 6px 14px;border-left:1px solid var(--line);text-decoration:none;color:var(--muted);transition:color .3s,border-color .3s}
+  .toc a:hover,.toc a.on{color:var(--ink);border-color:var(--brass)}
+  .notice{background:var(--paper-2);border:1px solid var(--line);border-left:3px solid var(--brass);border-radius:14px;padding:14px 18px;font-size:15.5px;color:var(--muted);margin-bottom:12px}
+  section{padding:30px 0;border-top:1px solid var(--line);scroll-margin-top:80px}
+  section:first-of-type{border-top:none}
+  .num{font:italic 400 18px/1 var(--serif);color:var(--brass)}
+  h2{font:400 clamp(30px,3.4vw,40px)/1.1 var(--serif);margin:6px 0 12px}
+  section p,section li{color:var(--muted);max-width:62ch}
+  section p strong,section li strong{color:var(--ink);font-weight:500}
+  ul{padding-left:0;list-style:none;margin:0}
+  li{position:relative;padding-left:22px;margin:8px 0}
+  li::before{content:"";position:absolute;left:2px;top:.72em;width:7px;height:7px;border-radius:50%;background:var(--brass)}
+  .pill{display:inline-block;font-size:13px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;margin:4px 6px 0 0;color:var(--ink);background:var(--paper)}
+
+  /* footer */
+  footer{background:#1A1714;color:#CFC8BC;border-top:1px solid var(--line)}
+  footer .bar{padding:26px 24px;flex-wrap:wrap;font-size:14.5px}
+  footer .bar nav a{color:#CFC8BC}
+  footer .bar nav a:hover{color:#FFF8EC}
+  footer .bar nav a.mark{font-size:22px;color:#EFE8DC}
+  footer small{color:#A39B8F;font-size:13px}
+
+  @media (max-width:960px){ .cards{grid-template-columns:1fr 1fr} .doc{grid-template-columns:1fr;gap:8px} .toc{display:none} }
+  @media (max-width:560px){ .cards{grid-template-columns:1fr} .intro{padding-top:48px} .bar nav a.opt{display:none} }
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} html{scroll-behavior:auto} }
 </style>
 </head>
 <body>
+
+<div class="ambient" aria-hidden="true"><i></i><i></i></div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="bar">
+    <a class="mark" href="/"><img class="logo-l" src="/static/brand/say2_icon_64.png" alt="" width="34" height="34"><img class="logo-d" src="/static/brand/say2_icon_dark_64.png" alt="" width="34" height="34">say2</a>
+    <nav>
+      <a href="/" class="opt">Back to say2</a>
+      <a href="#" class="gh" target="_blank" rel="noopener" hidden>GitHub</a>
+      <button class="theme" id="theme" type="button" aria-label="Switch to light mode">
+        <svg class="i sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg>
+        <svg class="i moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
 <main>
-  <a class="back" href="/">← Back to FreeAgent</a>
-  <h1>Privacy &amp; terms</h1>
-  <p class="date">Plain words, no fine print. Last updated October 2026.</p>
+  <div class="intro">
+    <p class="kicker rise">Privacy &amp; terms · Updated October 2026</p>
+    <h1 class="rise" style="--d:1">Plain words, <em>no fine print.</em></h1>
+    <p class="lead rise" style="--d:2">What say2 reads, what it keeps, and what it never does. If anything here is unclear, ask us on GitHub.</p>
+  </div>
 
-  <div class="box">FreeAgent is a hackathon project in active development. It is offered as is, for testing and demos.</div>
+  <div class="short" aria-label="The short version">
+    <div class="cards">
+      <div class="card rise" style="--d:3">
+        <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+        <b>Public pages only</b><p>We read what anyone can open. Nothing behind a login.</p>
+      </div>
+      <div class="card rise" style="--d:4">
+        <svg class="i" viewBox="0 0 24 24"><path d="M4 6h16v10H8l-4 4z"/><path d="M4 4l16 16"/></svg>
+        <b>Chats aren't saved</b><p>Only questions the assistant couldn't answer, so the owner can.</p>
+      </div>
+      <div class="card rise" style="--d:5">
+        <svg class="i" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        <b>Owner holds the key</b><p>We keep only a scrambled copy. Only you can open your Back office.</p>
+      </div>
+      <div class="card rise" style="--d:6">
+        <svg class="i" viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg>
+        <b>No ads, no tracking</b><p>No tracking cookies, no selling data, no ad networks.</p>
+      </div>
+    </div>
+  </div>
 
-  <h2>What we read</h2>
-  <p>When someone sets up an assistant, we read up to 50 public pages of that website, including public PDFs. We only read pages anyone can open without logging in. We don't read pages behind logins, and we respect sites that block automated readers.</p>
+  <div class="doc">
+    <nav class="toc" aria-label="On this page">
+      <p>On this page</p>
+      <a href="#read">What we read</a>
+      <a href="#store">What we store</a>
+      <a href="#chats">Chats</a>
+      <a href="#browser">In your browser</a>
+      <a href="#who">Who processes data</a>
+      <a href="#wrong">Answers can be wrong</a>
+      <a href="#fair">Fair use</a>
+      <a href="#remove">Removing a site</a>
+    </nav>
 
-  <h2>What we store</h2>
-  <ul>
-    <li>The text of those public pages, the site's logo link, name and description, and links for booking or ordering.</li>
-    <li>The style settings chosen at setup (voice, color, signature).</li>
-    <li>A scrambled version of the owner's edit key. We never store the key itself.</li>
-    <li>What the owner adds in Back Office: their own answers and house rules.</li>
-  </ul>
+    <div>
+      <div class="notice">say2 is a hackathon project in active development. It is offered as is, for testing and demos.</div>
 
-  <h2>Chats</h2>
-  <p>We don't save chat conversations. When a visitor asks a question, the question and the site's stored text are sent to the AI model to write the answer. Recent messages are kept only in the visitor's open browser tab so the assistant can follow the conversation.</p>
-  <p>One exception: when the assistant can't answer a question, we save that question's text (nothing else, no name or contact) so the business owner can answer it in their Back Office. Please don't type personal details into the chat.</p>
+      <section id="read">
+        <span class="num">01</span>
+        <h2>What we read</h2>
+        <p>When someone sets up an assistant, we read up to <strong>50 public pages</strong> of that website, including public PDFs. We only read pages anyone can open without logging in. We don't read pages behind logins, and we respect sites that block automated readers.</p>
+      </section>
 
-  <h2>Who processes the data</h2>
-  <p>Answers are written by NVIDIA's Nemotron model, running on Nebius Token Factory. Questions and site text are sent there to create each answer. The app itself is hosted on Render.</p>
+      <section id="store">
+        <span class="num">02</span>
+        <h2>What we store</h2>
+        <ul>
+          <li>The text of those public pages, the site's logo link, name and description, and links for booking or ordering.</li>
+          <li>The style settings chosen at setup: voice, color, look and signature.</li>
+          <li>A <strong>scrambled version</strong> of the owner's edit key. We never store the key itself.</li>
+          <li>What the owner adds in Back office: their own answers and house rules.</li>
+        </ul>
+      </section>
 
-  <h2>Answers can be wrong</h2>
-  <p>The assistant answers only from the business's own website and links to its source, but AI can still make mistakes, and websites go out of date. Please confirm anything important with the business directly, especially allergies, prices, and policies. The business is responsible for what its website says.</p>
+      <section id="chats">
+        <span class="num">03</span>
+        <h2>Chats</h2>
+        <p><strong>We don't save chat conversations.</strong> When a visitor asks a question, the question and the site's stored text are sent to the AI model to write the answer. Recent messages are kept only in the visitor's open browser tab so the assistant can follow the conversation.</p>
+        <p>One exception: when the assistant can't answer a question, we save that question's text (nothing else, no name or contact) so the business owner can answer it in their Back office. Please don't type personal details into the chat.</p>
+      </section>
 
-  <h2>Fair use</h2>
-  <ul>
-    <li>Set up assistants only for websites you own or have permission to use.</li>
-    <li>Don't use FreeAgent to spam, overload, or misuse anyone's website or our service. We limit how often anyone can use it.</li>
-  </ul>
+      <section id="browser">
+        <span class="num">04</span>
+        <h2>In your browser</h2>
+        <p>A few small settings live only in your own browser, never on our server:</p>
+        <span class="pill">Owner edit key</span><span class="pill">Light or dark choice</span>
+        <p>Clear your browser's site data and they're gone. If you're an owner, that also means losing access to your Back office from that browser.</p>
+      </section>
 
-  <h2>Removing a site</h2>
-  <p>If you own a website and want its assistant and stored text removed, open an issue on our GitHub page and we'll delete it.</p>
+      <section id="who">
+        <span class="num">05</span>
+        <h2>Who processes the data</h2>
+        <p>Answers are written by <strong>NVIDIA's Nemotron</strong> model, running on <strong>Nebius Token Factory</strong>. Questions and site text are sent there to create each answer. The app itself is hosted on <strong>Render</strong>.</p>
+      </section>
+
+      <section id="wrong">
+        <span class="num">06</span>
+        <h2>Answers can be wrong</h2>
+        <p>The assistant answers only from the business's own website and links to its source, but AI can still make mistakes, and websites go out of date. Please confirm anything important with the business directly, <strong>especially allergies, prices and policies</strong>. The business is responsible for what its website says.</p>
+      </section>
+
+      <section id="fair">
+        <span class="num">07</span>
+        <h2>Fair use</h2>
+        <ul>
+          <li>Set up assistants only for websites you own or have permission to use.</li>
+          <li>Don't use say2 to spam, overload or misuse anyone's website or our service. We limit how often anyone can use it.</li>
+        </ul>
+      </section>
+
+      <section id="remove">
+        <span class="num">08</span>
+        <h2>Removing a site</h2>
+        <p>If you own a website and want its assistant and stored text removed, <a href="#" class="gh-text">open an issue on our GitHub page</a> and we'll delete it.</p>
+      </section>
+    </div>
+  </div>
 </main>
+
+<footer>
+  <div class="bar">
+    <nav>
+      <a class="mark" href="/"><img src="/static/brand/say2_icon_dark_64.png" alt="" width="30" height="30">say2</a>
+      <a href="/">Home</a>
+      <a href="#" class="gh" target="_blank" rel="noopener" hidden>GitHub</a>
+    </nav>
+    <small>Built with NVIDIA Nemotron on Nebius Token Factory · Open source, AGPL-3.0</small>
+  </div>
+</footer>
+
+<script>
+const root = document.documentElement;
+const btn = document.getElementById("theme");
+
+// light / dark, shared with the landing page (dark unless the visitor picked light)
+function paint() {
+  const d = root.dataset.theme === "dark";
+  root.toggleAttribute("data-dark", d);
+  btn.setAttribute("aria-label", d ? "Switch to light mode" : "Switch to dark mode");
+}
+btn.onclick = () => {
+  root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+  try { localStorage.setItem("fa_theme", root.dataset.theme); } catch (e) {}
+  paint();
+};
+paint();
+
+// GitHub links come from REPO_URL on the server
+fetch("/config").then(r => r.json()).then(c => {
+  if (!c.repo) return;
+  document.querySelectorAll(".gh").forEach(a => { a.href = c.repo; a.hidden = false; });
+  document.querySelectorAll(".gh-text").forEach(a => { a.href = c.repo.replace(/\/$/, "") + "/issues"; a.target = "_blank"; a.rel = "noopener"; });
+}).catch(() => {});
+
+// highlight the section you're reading
+const links = [...document.querySelectorAll(".toc a")];
+const spy = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) links.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id));
+}), { rootMargin: "-30% 0px -60% 0px" });
+document.querySelectorAll("section[id]").forEach(s => spy.observe(s));
+</script>
 </body>
 </html>

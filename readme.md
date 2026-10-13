@@ -1,8 +1,12 @@
-# FreeAgent
+# say2
+
+<img src="static/brand/say2_icon_180.png" alt="say2 logo" width="120">
+
+*Said "setu", the Sanskrit word for bridge: the bridge between a small business and every customer.*
 
 **Your website, now taking questions.**
 
-FreeAgent gives any small business website a front desk. Paste your link, and it reads every page and every PDF on your site: menus, price lists, schedules, the fine print. Then it adds a small chat bubble to your site that answers customers in your voice, any time of day, with a link to where each answer came from.
+say2 gives any small business website a front desk. Paste your link, and it reads every page and every PDF on your site: menus, price lists, schedules, the fine print. Then it adds a small chat bubble to your site that answers customers in your voice, any time of day, with a link to where each answer came from.
 
 **[Try it live →](https://freeagent-lra1.onrender.com)** &nbsp;·&nbsp; Demo video: _add link_
 
@@ -14,11 +18,11 @@ FreeAgent gives any small business website a front desk. Paste your link, and it
 - **1974, the barcode scanner.** Owners stopped losing time.
 - **Today, the front desk.** Owners stop losing the customer who asked a question at 11 pm and never got an answer.
 
-Big chains have call centers. The corner café has nobody. FreeAgent is that front desk.
+Big chains have call centers. The corner café has nobody. say2 is that front desk.
 
 ## How to use it
 
-1. **Paste your website link** on the FreeAgent page and click **Hire my assistant**. No account needed.
+1. **Paste your website link** on the say2 page and click **Hire my assistant**. No account needed.
 2. **Watch it read your site.** A receipt prints what it finds: pages, PDF menus, your logo, booking links. Most sites take about a minute.
 3. **Add it to your site.** You get one line of code, with step-by-step help for Wix, Squarespace, WordPress, Shopify and Webflow. Not technical? Use **Send to developer** and forward the ready-made message.
 4. **Make it yours.** Under **Preview & style**, pick its voice (Polished, Warm or Witty), color, light or dark look, and logo.
@@ -98,7 +102,7 @@ There's no vector database and no training step. A small business site fits insi
 
 ```bash
 git clone <your repo link>
-cd freeagent
+cd <your repo folder>
 python -m venv venv
 
 # Windows

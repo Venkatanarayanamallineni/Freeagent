@@ -3,13 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FreeAgent: your website, now taking questions</title>
-<meta name="description" content="Paste a link. FreeAgent reads every page and PDF, then gives your website a front desk that answers in your voice, with sources.">
+<title>say2: your website, now taking questions</title>
+<link rel="icon" href="/static/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/brand/say2_icon_32.png">
+<link rel="apple-touch-icon" href="/static/brand/say2_icon_180.png">
+<meta name="description" content="Paste a link. say2 reads every page and PDF, then gives your website a front desk that answers in your voice, with sources.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <script>
-  try { const t = localStorage.getItem("fa_theme"); if (t === "dark" || t === "light") document.documentElement.dataset.theme = t; } catch (e) {}
+  let t = "dark"; try { const v = localStorage.getItem("fa_theme"); if (v === "light") t = "light"; } catch (e) {}
+  document.documentElement.dataset.theme = t;
 </script>
 <style>
   :root{
@@ -91,6 +95,18 @@
   .top{position:sticky;top:0;z-index:50;background:var(--header);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
   .bar{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
   .mark{display:flex;align-items:center;gap:10px;font:400 26px/1 var(--serif);text-decoration:none}
+  .mark img{display:block;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+  .logo-d{display:none!important}
+  [data-dark] .logo-l{display:none!important}
+  [data-dark] .logo-d{display:block!important}
+  footer .bar nav a{color:#CFC8BC}
+  footer .bar nav a:hover{color:#FFF8EC}
+  footer .bar nav a.mark{font-size:22px;color:#EFE8DC}
+  footer nav{display:flex;align-items:center;gap:22px}
+  .seal-logo{position:absolute;inset:-1%;width:102%;height:102%;opacity:0;transform:scale(.92) rotate(-8deg);transition:opacity .6s,transform .8s var(--spring);pointer-events:none}
+  .seal.logo-on{background-color:transparent;background-image:none;box-shadow:none}
+  .seal.logo-on::before,.seal.logo-on .glyph,.seal.logo-on .mono{opacity:0}
+  .seal.logo-on .seal-logo{opacity:1;transform:none}
   .mark .seal{width:32px;font-size:20px;--c:#24211D;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
   .mark .seal .mono{opacity:1;color:var(--brass)}
   .bar nav{display:flex;gap:24px;font-size:15px}
@@ -373,7 +389,7 @@
 
 <header class="top">
   <div class="bar">
-    <a class="mark" href="/"><span class="seal" aria-hidden="true"><span class="mono">F</span></span>FreeAgent</a>
+    <a class="mark" href="/"><img class="logo-l" src="/static/brand/say2_icon_64.png" alt="" width="34" height="34"><img class="logo-d" src="/static/brand/say2_icon_dark_64.png" alt="" width="34" height="34">say2</a>
     <nav>
       <a href="#how" class="opt">How it works</a>
       <a href="#hood" class="opt">Under the hood</a>
@@ -501,6 +517,8 @@
       <div class="seal" id="seal">
         <svg class="glyph draw" id="glyph" viewBox="0 0 24 24"></svg>
         <span class="mono" id="mono"></span>
+        <img class="seal-logo logo-l" src="/static/brand/say2_icon_512.png" alt="">
+        <img class="seal-logo logo-d" src="/static/brand/say2_icon_dark_512.png" alt="">
         <svg class="think" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48"/></svg>
       </div>
       <div class="say" id="say">Our oat latte is $5.25. Want the full drinks menu?</div>
@@ -530,7 +548,7 @@
         <span class="ico" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M4 5h16v10H10l-5 4v-4H4z"/><path d="M8 9.5h8M8 12h5"/></svg></span>
         <b>The front desk</b>
         <p>Owners stop losing the customer who asked at 11 pm.</p>
-        <small>FreeAgent</small>
+        <small>say2</small>
       </li>
     </ol>
     <p class="era-close">Big chains have call centers. The corner café has nobody. <span>Until now.</span></p>
@@ -618,7 +636,7 @@
 <footer>
   <div class="bar">
     <nav>
-      <span>FreeAgent</span>
+      <a class="mark" href="/"><img src="/static/brand/say2_icon_dark_64.png" alt="" width="30" height="30">say2</a>
       <a href="/static/privacy.html">Privacy &amp; terms</a>
       <a href="#" class="gh" target="_blank" rel="noopener" hidden>GitHub</a>
     </nav>
@@ -687,11 +705,11 @@ const PDF_ICON = '<svg class="i" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/
 
 const seal = $("seal"), glyph = $("glyph"), mono = $("mono");
 function showIcon(key) {
-  seal.classList.remove("mono-on");
+  seal.classList.remove("mono-on", "logo-on");
   glyph.innerHTML = ICONS[key] || ICONS.sparkle;
   glyph.classList.remove("draw"); void glyph.getBoundingClientRect(); glyph.classList.add("draw");
 }
-function showMono(letter) { mono.textContent = letter; seal.classList.add("mono-on"); }
+function showMono(letter) { mono.textContent = letter; seal.classList.remove("logo-on"); seal.classList.add("mono-on"); }
 function mood(el, m) { el.classList.remove("thinking", "happy", "sad"); if (m) { void el.offsetWidth; el.classList.add(m); } }
 
 /* ---------- businesses shown on the page (all made up) ---------- */
@@ -741,6 +759,18 @@ function setSkin(k) {
 }
 showIcon("coffee");
 
+const SAY2_RED = "#CA293E";
+function showSay2() {
+  root.style.setProperty("--skin", SAY2_RED);
+  root.style.setProperty("--skin-light", "#D9B8BC");
+  const w = $("word"), say = $("say");
+  w.classList.add("out");
+  setTimeout(() => { w.textContent = "own"; w.classList.remove("out"); }, calm ? 0 : 350);
+  seal.classList.remove("mono-on"); seal.classList.add("logo-on");
+  say.textContent = "Hi, I'm say2. Paste your link and I'll get to work.";
+  say.classList.remove("pop"); void say.offsetWidth; say.classList.add("pop");
+}
+
 /* ---------- story: the mock site follows the same business ---------- */
 const stage = $("stage"), mini = $("mini"), counter = $("counter"), mock = $("mock");
 $("dots").innerHTML = skins.map(() => "<i></i>").join("");
@@ -766,12 +796,17 @@ setMock(0, false);
 new IntersectionObserver(([en]) => { storyVisible = en.isIntersecting; }, { threshold: .15 }).observe($("how"));
 
 // one timer drives both the hero and the story
-let idx = 0;
+// café, bookstore, say2, salon, pizzeria, say2, studio, boutique, say2 …
+const order = [];
+skins.forEach((_, i) => { order.push(i); if (i % 2 === 1) order.push(-1); });
+let step = 0;
 if (!calm) setInterval(() => {
   if (document.hidden) return;
-  idx = (idx + 1) % skins.length;
-  if (!paused) setSkin(skins[idx]);
-  setMock(idx, storyVisible);
+  step = (step + 1) % order.length;
+  const i = order[step];
+  if (i === -1) { if (!paused) showSay2(); return; }   // the story mock keeps showing businesses
+  if (!paused) setSkin(skins[i]);
+  setMock(i, storyVisible);
 }, 5000);
 
 let countTimer = null;
@@ -953,7 +988,7 @@ $("f").addEventListener("submit", async e => {
   $("go").disabled = true; $("go").textContent = "Reading…";
   receipt.textContent = ""; $("printer").classList.add("on"); $("install").classList.remove("on");
   const head = document.createElement("div"); head.className = "r-head r-note";
-  const hb = document.createElement("b"); hb.textContent = "FREEAGENT"; head.append(hb, new Date().toLocaleString());
+  const hb = document.createElement("b"); hb.textContent = "SAY2"; head.append(hb, new Date().toLocaleString());
   receipt.appendChild(head);
   note(url.replace(/^https?:\/\//, "").replace(/\/$/, "").toUpperCase());
   rule();
