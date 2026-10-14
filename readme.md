@@ -8,7 +8,7 @@
 
 say2 gives any small business website a front desk. Paste your link, and it reads every page and every PDF on your site: menus, price lists, schedules, the fine print. Then it adds a small chat bubble to your site that answers customers in your voice, any time of day, with a link to where each answer came from.
 
-**[Try it live →](https://freeagent-lra1.onrender.com](https://say2.onrender.com)** &nbsp;·&nbsp; Demo video: _add link_
+**[Try it live →](https://say2.onrender.com)** &nbsp;·&nbsp; Demo video: _add link_
 
 ---
 
