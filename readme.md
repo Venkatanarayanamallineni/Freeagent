@@ -1,6 +1,6 @@
 # say2
 
-<img src="static/brand/say2_icon_180.png" alt="say2 logo" width="120">
+<img src="static/brand/say2_wordmark.svg" alt="say2" width="220">
 
 *Said "setu", the Sanskrit word for bridge: the bridge between a small business and every customer.*
 

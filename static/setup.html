@@ -8,12 +8,20 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/static/brand/say2_icon_32.png">
 <link rel="apple-touch-icon" href="/static/brand/say2_icon_180.png">
 <meta name="description" content="Paste a link. say2 reads every page and PDF, then gives your website a front desk that answers in your voice, with sources.">
+<link rel="preload" href="/static/brand/say2_wordmark.svg" as="image">
+<link rel="preload" href="/static/brand/wing.webp" as="image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <script>
   let t = "dark"; try { const v = localStorage.getItem("fa_theme"); if (v === "light") t = "light"; } catch (e) {}
   document.documentElement.dataset.theme = t;
+  // the opening film: once per visit, never for reduced motion. Add ?intro to any link to force it (for recording).
+  try {
+    const q = new URLSearchParams(location.search);
+    const calmNow = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (q.has("intro") || (!calmNow && !sessionStorage.getItem("say2_film"))) document.documentElement.classList.add("film-on");
+  } catch (e) {}
 </script>
 <style>
   :root{
@@ -95,7 +103,6 @@
   .top{position:sticky;top:0;z-index:50;background:var(--header);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
   .bar{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
   .mark{display:flex;align-items:center;gap:10px;font:400 26px/1 var(--serif);text-decoration:none}
-  .mark img{display:block;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.25)}
   .logo-d{display:none!important}
   [data-dark] .logo-l{display:none!important}
   [data-dark] .logo-d{display:block!important}
@@ -358,6 +365,46 @@
   footer nav a{color:#CFC8BC}
   footer small{color:#A39B8F;font-size:13px}
 
+  /* ---------- the say2 wordmark (the owner's own lettering, in say2 red) ---------- */
+  .logo{display:block;height:var(--h,40px);width:auto}
+  .mark .logo{--h:46px;margin:-4px 0 -10px}
+  footer .bar nav a.mark .logo{--h:38px}
+
+  /* ---------- the opening: Ram Setu from above, one eagle, then the name ---------- */
+  #film{display:none}
+  .film-on body{overflow:hidden}
+  .film-on .rise{animation-play-state:paused}
+  .film-on #film{display:block;position:fixed;inset:0;z-index:200;background:#000;overflow:hidden;cursor:pointer}
+  #film.out{opacity:0;transition:opacity .7s ease;pointer-events:none}
+  #film .setu{position:absolute;inset:0;width:100%;height:100%;animation:s-away .7s ease 3.05s forwards}
+  @keyframes s-away{to{opacity:0;transform:scale(1.04)}}
+  #film .land{opacity:0;animation:s-in 1.4s ease .2s forwards}
+  #film .land.r{animation-delay:.45s}
+  #film .lbl{opacity:0;animation:s-in 1.2s ease .9s forwards}
+  #film .lbl.r{animation-delay:1.15s}
+  @keyframes s-in{to{opacity:1}}
+  #film .shoal{opacity:0;animation:s-in 1.6s ease 1s forwards}
+  #film .stone{opacity:0;transform-box:fill-box;transform-origin:center;animation:s-stone .5s ease-out both;animation-delay:calc(1.05s + var(--i) * 55ms)}
+  @keyframes s-stone{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+  /* one wing, very close: it rises out of the bottom-left corner and beats its way to the top-right.
+     Swap static/brand/wing.webp for any wing photo on black. */
+  #film .flyer{position:absolute;left:0;top:0;width:150vmax;height:75vmax;mix-blend-mode:lighten;
+    animation:w-path 1.35s cubic-bezier(.42,.05,.6,.95) 2.4s both}
+  @keyframes w-path{0%{transform:translate(-125vmax,calc(100vh + 30vmax)) rotate(-24deg)}
+    100%{transform:translate(calc(100vw + 5vmax),-85vmax) rotate(-34deg)}}
+  #film .wing{display:block;width:100%;height:auto;transform-origin:0% 45%;
+    animation:w-flap .45s ease-in-out 2.4s 3 alternate both}
+  @keyframes w-flap{from{transform:rotate(-14deg) scaleY(1.05)}to{transform:rotate(16deg) scaleY(.62)}}
+  #film .name{position:absolute;inset:0;display:grid;place-items:center;
+    -webkit-mask:linear-gradient(45deg,#000 45%,transparent 55%) 100% 0/300% 300% no-repeat;
+            mask:linear-gradient(45deg,#000 45%,transparent 55%) 100% 0/300% 300% no-repeat;
+    animation:n-wipe .8s cubic-bezier(.35,0,.65,1) 3.05s both}
+  @keyframes n-wipe{to{-webkit-mask-position:0 100%;mask-position:0 100%}}
+  #film .name > div{position:relative;width:clamp(220px,32vw,480px);display:grid;place-items:center}
+  #film .name img{position:relative;width:100%;height:auto;filter:brightness(.6) drop-shadow(0 20px 46px rgba(120,20,34,.18))}
+  #film .skip{position:absolute;right:22px;bottom:18px;z-index:3;font:400 12px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#4d4740;background:none;border:none;padding:8px;cursor:pointer;transition:color .3s}
+  #film .skip:hover,#film .skip:focus-visible{color:#9a9288}
+
   @media (max-width:960px){
     .hero{grid-template-columns:minmax(0,1fr);min-height:0;padding-top:40px;gap:28px}
     .stage-hero{width:min(280px,64vw)}
@@ -384,12 +431,51 @@
 </head>
 <body>
 
+<div id="film" aria-label="say2 opening">
+  <svg class="setu" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <filter id="haze" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+      <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d1a17"/><stop offset="1" stop-color="#0f0e0c"/></linearGradient>
+    </defs>
+    <g class="land l"><path d="M-40 240C-27 204 12 210 40 205C68 200 104 202 130 210C156 218 180 233 196 250C212 267 214 291 226 310C238 329 250 348 270 365C290 382 320 398 345 412C370 426 398 437 420 446C442 455 472 463 476 468C480 473 463 476 446 474C429 472 398 465 372 458C346 451 318 440 290 432C262 424 232 414 205 408C178 402 156 397 130 396C104 395 78 398 50 402C22 406 -25 447 -40 420C-55 393 -53 276 -40 240Z" fill="#0b0b0a" filter="url(#haze)" transform="translate(0 8)"/><path d="M-40 240C-27 204 12 210 40 205C68 200 104 202 130 210C156 218 180 233 196 250C212 267 214 291 226 310C238 329 250 348 270 365C290 382 320 398 345 412C370 426 398 437 420 446C442 455 472 463 476 468C480 473 463 476 446 474C429 472 398 465 372 458C346 451 318 440 290 432C262 424 232 414 205 408C178 402 156 397 130 396C104 395 78 398 50 402C22 406 -25 447 -40 420C-55 393 -53 276 -40 240Z" fill="url(#sand)" stroke="#2c2823" stroke-width="1.2"/></g>
+    <g class="land r"><path d="M1126 524C1121 519 1149 516 1170 512C1191 508 1220 503 1250 500C1280 497 1317 493 1350 494C1383 495 1418 499 1450 506C1482 513 1508 525 1540 536C1572 547 1623 547 1640 574C1657 601 1653 686 1640 700C1627 714 1588 675 1560 660C1532 645 1500 626 1470 612C1440 598 1410 587 1380 578C1350 569 1320 562 1290 556C1260 550 1227 545 1200 540C1173 535 1131 529 1126 524Z" fill="#0b0b0a" filter="url(#haze)" transform="translate(0 8)"/><path d="M1126 524C1121 519 1149 516 1170 512C1191 508 1220 503 1250 500C1280 497 1317 493 1350 494C1383 495 1418 499 1450 506C1482 513 1508 525 1540 536C1572 547 1623 547 1640 574C1657 601 1653 686 1640 700C1627 714 1588 675 1560 660C1532 645 1500 626 1470 612C1440 598 1410 587 1380 578C1350 569 1320 562 1290 556C1260 550 1227 545 1200 540C1173 535 1131 529 1126 524Z" fill="url(#sand)" stroke="#2c2823" stroke-width="1.2"/></g>
+    <path class="shoal" d="M488 474Q800 598 1114 526" fill="none" stroke="#11100f" stroke-width="34" stroke-linecap="round" filter="url(#haze)"/>
+    <g fill="#1b1916" stroke="#2e2a25" stroke-width="1"><path class="stone" style="--i:0" d="M508 476C508 477 506 477 505 478C504 478 501 479 500 479C498 479 496 478 494 477C493 477 491 476 491 475C491 475 493 474 494 474C496 473 498 473 500 473C502 473 504 473 506 474C507 474 508 475 508 476Z"/><path class="stone" style="--i:1" d="M536 488C536 489 534 489 533 490C531 490 529 490 528 489C526 488 526 487 525 485C524 484 522 482 522 482C523 481 525 480 526 480C528 481 530 481 531 482C533 482 534 484 535 485C536 486 537 487 536 488Z"/><path class="stone" style="--i:2" d="M558 502C558 503 557 504 556 504C555 505 553 504 551 504C549 504 548 503 547 503C546 502 545 501 545 500C545 499 546 498 547 497C548 497 550 497 552 497C554 497 555 498 556 499C558 500 558 501 558 502Z"/><path class="stone" style="--i:3" d="M586 507C586 508 586 509 584 510C583 510 581 510 579 510C577 510 574 509 573 508C572 507 571 505 572 504C572 503 574 502 575 502C577 501 579 500 581 500C582 501 584 503 585 504C586 505 587 506 586 507Z"/><path class="stone" style="--i:4" d="M611 513C611 514 611 515 610 516C610 518 608 519 606 520C605 520 602 521 601 521C600 521 599 520 599 519C598 518 598 517 598 516C599 515 601 513 603 513C604 512 606 511 608 512C609 512 610 512 611 513Z"/><path class="stone" style="--i:5" d="M639 525C639 526 640 528 638 528C636 528 633 528 630 528C627 528 624 527 622 526C620 525 619 523 620 522C620 521 623 521 624 520C626 520 629 520 631 520C634 521 637 522 639 522C640 523 640 524 639 525Z"/><path class="stone" style="--i:6" d="M660 523C660 524 659 525 658 526C657 527 656 528 654 529C653 530 651 530 650 530C649 530 646 530 646 530C646 529 648 528 649 526C650 525 651 524 652 524C653 523 656 522 657 522C658 522 660 523 660 523Z"/><path class="stone" style="--i:7" d="M696 535C696 536 696 537 694 538C693 538 689 539 687 540C684 540 682 539 680 538C679 538 677 537 677 536C677 536 678 535 680 534C681 533 684 533 686 532C688 532 691 532 693 533C695 533 695 534 696 535Z"/><path class="stone" style="--i:8" d="M716 534C716 535 716 536 715 537C714 538 712 539 710 539C709 539 707 539 706 538C705 538 704 537 704 536C703 535 704 533 705 533C706 532 708 532 710 532C711 532 713 531 715 531C716 532 716 533 716 534Z"/><path class="stone" style="--i:9" d="M746 544C746 545 746 547 745 547C744 548 740 548 738 548C736 548 733 548 732 548C730 548 729 547 729 546C729 545 730 544 731 544C733 543 735 542 737 542C739 542 742 542 743 542C745 543 746 544 746 544Z"/><path class="stone" style="--i:10" d="M764 538C764 539 764 541 763 542C762 543 760 544 759 544C757 545 756 545 755 546C753 546 752 545 752 544C751 544 752 542 752 541C753 540 755 540 756 539C757 538 759 537 761 537C762 536 764 537 764 538Z"/><path class="stone" style="--i:11" d="M799 544C799 545 798 546 797 547C796 548 794 550 793 551C791 551 789 551 787 551C786 551 785 551 785 550C784 550 783 549 784 548C785 547 788 545 790 545C792 544 794 544 796 544C797 544 798 544 799 544Z"/><path class="stone" style="--i:12" d="M822 548C822 549 820 550 818 550C816 550 814 550 812 550C811 549 809 547 808 546C807 545 805 543 805 542C805 541 808 540 809 540C811 540 814 540 816 540C818 541 819 543 820 544C821 546 823 548 822 548Z"/><path class="stone" style="--i:13" d="M848 558C848 559 846 560 844 560C842 560 839 559 836 558C834 558 831 557 829 555C828 554 827 552 828 552C828 551 831 550 832 550C834 550 836 550 839 551C841 552 843 553 845 554C847 555 849 557 848 558Z"/><path class="stone" style="--i:14" d="M875 559C874 560 872 561 870 560C868 560 865 559 862 557C860 556 858 555 857 554C856 552 855 551 855 550C856 549 857 549 859 549C860 549 863 550 865 551C867 552 870 554 872 555C873 556 875 558 875 559Z"/><path class="stone" style="--i:15" d="M902 558C902 559 901 560 900 561C899 561 896 561 894 560C892 560 889 558 888 557C887 556 886 554 886 553C887 552 889 551 890 551C892 551 894 552 896 552C898 553 901 554 902 555C903 556 902 557 902 558Z"/><path class="stone" style="--i:16" d="M928 554C929 554 927 556 925 557C923 558 919 558 917 558C914 558 912 558 910 558C909 557 908 557 907 556C907 555 907 554 908 553C909 552 914 551 916 551C919 551 921 552 923 552C925 552 928 553 928 554Z"/><path class="stone" style="--i:17" d="M955 556C954 557 953 557 952 558C951 558 949 560 946 560C944 559 941 558 940 558C938 557 938 556 938 555C937 554 938 553 940 552C941 552 944 552 947 552C949 552 953 552 954 553C955 554 955 555 955 556Z"/><path class="stone" style="--i:18" d="M980 544C980 545 979 546 978 547C977 548 975 549 974 549C972 549 970 549 969 549C968 549 965 549 965 548C964 547 966 546 967 545C969 544 970 543 972 542C974 542 976 542 977 542C979 542 980 543 980 544Z"/><path class="stone" style="--i:19" d="M1010 546C1010 546 1007 547 1006 548C1004 548 1001 549 999 549C997 549 994 548 993 548C992 547 991 546 991 545C991 544 990 543 992 542C993 542 997 542 1000 542C1002 542 1005 542 1007 543C1008 544 1010 545 1010 546Z"/><path class="stone" style="--i:20" d="M1033 544C1032 545 1030 545 1029 546C1027 547 1026 547 1024 547C1022 547 1020 546 1019 546C1018 545 1017 544 1017 543C1017 542 1017 541 1018 540C1020 540 1023 539 1024 540C1026 540 1029 540 1030 541C1031 542 1033 543 1033 544Z"/><path class="stone" style="--i:21" d="M1059 543C1059 544 1058 545 1057 546C1055 547 1053 547 1051 547C1049 547 1046 547 1045 546C1043 545 1043 544 1043 543C1042 542 1043 540 1044 540C1045 539 1049 539 1051 539C1053 539 1056 539 1057 540C1059 541 1059 542 1059 543Z"/><path class="stone" style="--i:22" d="M1086 534C1085 535 1084 536 1082 536C1081 537 1078 537 1077 536C1075 536 1073 534 1072 533C1071 532 1070 530 1071 529C1071 528 1073 528 1074 527C1076 527 1078 527 1080 527C1082 528 1085 529 1086 531C1087 532 1086 533 1086 534Z"/><path class="stone" style="--i:23" d="M1114 522C1114 523 1114 525 1112 526C1111 527 1108 528 1105 529C1103 530 1100 531 1098 531C1097 531 1096 530 1096 529C1095 528 1096 526 1097 525C1098 524 1100 522 1102 521C1105 520 1108 520 1110 520C1112 520 1114 521 1114 522Z"/></g>
+    <g font-family="Geist, system-ui, sans-serif" font-size="13" letter-spacing="4" fill="#57514a">
+      <text class="lbl" x="150" y="455" text-anchor="middle">YOUR GUESTS</text>
+      <text class="lbl r" x="1400" y="470" text-anchor="middle">YOUR BUSINESS</text>
+    </g>
+  </svg>
+  <div class="name"><div><img src="/static/brand/say2_wordmark.svg" alt="say2"></div></div>
+  <div class="flyer" aria-hidden="true"><img class="wing" src="/static/brand/wing.webp" alt=""></div>
+  <button class="skip" id="filmSkip" type="button">Skip</button>
+</div>
+<script>
+(() => {
+  const root = document.documentElement, film = document.getElementById("film");
+  if (!root.classList.contains("film-on")) { film.remove(); return; }
+  try { sessionStorage.setItem("say2_film", "1"); } catch (e) {}
+  let done = false;
+  const end = () => {
+    if (done) return; done = true;
+    film.classList.add("out"); root.classList.remove("film-on");
+    removeEventListener("keydown", key);
+    setTimeout(() => film.remove(), 800);
+  };
+  const key = e => { if (["Escape", "Enter", " "].includes(e.key)) { e.preventDefault(); end(); } };
+  addEventListener("keydown", key);
+  film.addEventListener("click", end);
+  setTimeout(end, 5200);
+})();
+</script>
+
+
 <div class="ambient" aria-hidden="true"><i></i><i></i></div>
 <div class="grain" aria-hidden="true"></div>
 
 <header class="top">
   <div class="bar">
-    <a class="mark" href="/"><img class="logo-l" src="/static/brand/say2_icon_64.png" alt="" width="34" height="34"><img class="logo-d" src="/static/brand/say2_icon_dark_64.png" alt="" width="34" height="34">say2</a>
+    <a class="mark" href="/"><img class="logo" src="/static/brand/say2_wordmark.svg" alt="say2"></a>
     <nav>
       <a href="#how" class="opt">How it works</a>
       <a href="#hood" class="opt">Under the hood</a>
@@ -636,7 +722,7 @@
 <footer>
   <div class="bar">
     <nav>
-      <a class="mark" href="/"><img src="/static/brand/say2_icon_dark_64.png" alt="" width="30" height="30">say2</a>
+      <a class="mark" href="/"><img src="/static/brand/say2_icon_dark_64.png" alt="say2" width="44" height="44" style="border-radius:50%"></a>
       <a href="/static/privacy.html">Privacy &amp; terms</a>
       <a href="#" class="gh" target="_blank" rel="noopener" hidden>GitHub</a>
     </nav>
@@ -759,7 +845,7 @@ function setSkin(k) {
 }
 showIcon("coffee");
 
-const SAY2_RED = "#CA293E";
+const SAY2_RED = "#CB263B";
 function showSay2() {
   root.style.setProperty("--skin", SAY2_RED);
   root.style.setProperty("--skin-light", "#D9B8BC");
