@@ -49,7 +49,7 @@ Your answers always come before the website. Only you can open your Back office:
 ## Good to know
 
 - **AI can still be wrong,** and websites go out of date. Every chat window reminds customers to confirm allergies and anything important with you.
-- **What we store:** your site's public text, your style settings, and your Back office answers and rules. We don't save chat conversations, only the text of questions the assistant couldn't answer, so you can answer them. See the [privacy page](https://freeagent-lra1.onrender.com/static/privacy.html).
+- **What we store:** your site's public text, your style settings, and your Back office answers and rules. We don't save chat conversations, only the text of questions the assistant couldn't answer, so you can answer them. See the [privacy page](https://say2.onrender.com/static/privacy.html).
 - **Sites it can't read yet:** sites that block automated readers, sites that build their pages entirely with JavaScript, and menus that are photos inside a PDF.
 - **Fair use:** set it up only for sites you own or have permission to use.
 
@@ -101,8 +101,8 @@ There's no vector database and no training step. A small business site fits insi
 ### Install
 
 ```bash
-git clone <your repo link>
-cd <your repo folder>
+git clone https://github.com/Venkatanarayanamallineni/Say2.git
+cd Say2
 python -m venv venv
 
 # Windows
@@ -137,6 +137,7 @@ Command-line tools (optional):
 ```bash
 python crawler.py https://example.com     # read a site into data/
 python ask.py data/example_com.json       # chat with it in the terminal
+python eval.py data/example_com.json evals/questions.csv   # accuracy test, writes eval_report.md
 ```
 
 ### Deploy on Render
@@ -153,6 +154,7 @@ Render's free tier sleeps after 15 minutes without visitors, and its disk resets
 |---|---|
 | `crawler.py` | Reads the site: pages, PDFs, logo, name, booking and order links |
 | `ask.py` | Builds the prompt and calls Nemotron on Nebius |
+| `eval.py` | Accuracy test: asks a list of questions and scores the answers |
 | `server.py` | The web server: setup, chat, Back office, settings, rate limits |
 | `static/setup.html` | Landing page, setup receipt and install card |
 | `static/widget.js` | The chat bubble businesses add to their site |

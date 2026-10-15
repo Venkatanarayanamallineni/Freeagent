@@ -441,7 +441,7 @@ def favicon():
     return FileResponse("static/brand/favicon.ico")
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])  # uptime pingers often use HEAD
 def health():
     return {"ok": True}
 
