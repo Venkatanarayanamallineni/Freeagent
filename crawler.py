@@ -1,4 +1,4 @@
-import io, json, os, re, sys
+import io, ipaddress, json, os, re, socket, sys
 from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
@@ -7,6 +7,8 @@ from pypdf import PdfReader
 MAX_PAGES = 50
 MAX_ACTIONS = 8
 HEADERS = {"User-Agent": "say2Bot/1.0"}
+MAX_BYTES = 12 * 1024 * 1024   # skip anything bigger than 12 MB (huge PDFs, videos)
+MAX_HOPS = 5                   # redirects we are willing to follow
 
 # words on a link that mean "book / reserve / order"
 ACTION_TEXT = re.compile(r"\b(book( now| online| an? appointment| a table)?|reserve( now| a table)?|reservations?|"
@@ -16,6 +18,49 @@ ACTION_HOSTS = ("opentable", "resy.com", "toasttab", "calendly", "vagaro", "book
                 "square.site", "doordash", "ubereats", "grubhub", "mindbody", "setmore", "acuityscheduling",
                 "exploretock", "sevenrooms", "chownow", "slicelife")
 SKIP_HOSTS = ("facebook.", "instagram.", "twitter.", "x.com", "tiktok.", "youtube.", "linkedin.", "pinterest.")
+
+
+def is_public_url(url):
+    """Only real public websites. Blocks localhost, private networks (10.x, 192.168.x ...),
+    and cloud metadata addresses like 169.254.169.254."""
+    try:
+        p = urlparse(url)
+        if p.scheme not in ("http", "https") or not p.hostname:
+            return False
+        for info in socket.getaddrinfo(p.hostname, p.port or (443 if p.scheme == "https" else 80)):
+            ip = ipaddress.ip_address(info[4][0])
+            if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast or ip.is_unspecified:
+                return False
+        return True
+    except Exception:
+        return False
+
+
+def safe_get(url, timeout=15):
+    """requests.get, but every hop (including redirects) must be a public address,
+    and the download is capped in size."""
+    for _ in range(MAX_HOPS + 1):
+        if not is_public_url(url):
+            raise ValueError(f"blocked address: {url}")
+        r = requests.get(url, timeout=timeout, headers=HEADERS, allow_redirects=False, stream=True)
+        if r.status_code in (301, 302, 303, 307, 308) and r.headers.get("Location"):
+            r.close()
+            url = urljoin(url, r.headers["Location"])
+            continue
+        size = int(r.headers.get("Content-Length") or 0)
+        if size > MAX_BYTES:
+            r.close()
+            raise ValueError(f"too big: {url}")
+        data = b""
+        for chunk in r.iter_content(65536):
+            data += chunk
+            if len(data) > MAX_BYTES:
+                r.close()
+                raise ValueError(f"too big: {url}")
+        r._content = data
+        r.url = url
+        return r
+    raise ValueError(f"too many redirects: {url}")
 
 
 def pdf_text(content):
@@ -89,7 +134,7 @@ def crawl(start_url, progress=None):
             continue
         seen.add(url)
         try:
-            r = requests.get(url, timeout=15, headers=HEADERS)
+            r = safe_get(url)
         except Exception as e:
             print("skip", url, e)
             continue

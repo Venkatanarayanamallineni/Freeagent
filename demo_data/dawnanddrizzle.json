@@ -1,0 +1,54 @@
+{
+  "site": "https://say2.onrender.com/static/demo/dawn/index.html",
+  "name": "Dawn & Drizzle",
+  "description": "Dawn & Drizzle is a neighborhood café on Church Street in Riverton. Araku Valley coffee roasted in-house, South Indian chicory filter coffee, fresh bakes and all-day brunch.",
+  "logo": "https://say2.onrender.com/static/demo/dawn/logo.png",
+  "actions": [
+    {
+      "url": "https://say2.onrender.com/static/demo/dawn/reserve.html",
+      "text": "Reserve a weekend table",
+      "kind": "reserve"
+    }
+  ],
+  "pages": [
+    {
+      "url": "https://say2.onrender.com/static/demo/dawn/index.html",
+      "title": "Dawn & Drizzle | Coffee, bakery & all-day brunch",
+      "text": "Dawn & Drizzle | Coffee, bakery & all-day brunch Church Street, Riverton · since 2019 Good mornings, slowly poured. A neighborhood café for Araku Valley coffee roasted in-house, South Indian chicory filter coffee, warm bakes and all-day brunch. See the menu Reserve a weekend table Our story From two kitchens to one counter. Dawn & Drizzle started in 2019, when Meera and Daniel put her family's filter coffee next to his grandmother's honey cake and the line went out the door. Today we roast Araku Valley beans every Tuesday, bake from scratch every morning, and drizzle local wildflower honey on just about everything. Hours When we're open Monday to Friday 6:30 am to 4 pm Saturday 7:30 am to 5 pm Sunday 8 am to 2 pm The kitchen stops taking food orders 30 minutes before we close. We're closed on Thanksgiving Day and Christmas Day. Start here Three things regulars order Chicory Filter Coffee South Indian style decoction with 20% chicory, frothy hot milk, served in a steel tumbler. $4.75 Araku Valley Pour-Over Single-origin arabica from the Araku Valley hills of Andhra Pradesh, India. Notes of jaggery, plum and cocoa. $5.50 Honey Drizzle Latte Our signature latte with local wildflower honey and a little cinnamon. $6.25 Full drinks and bakery list: Drinks & Bakery menu (PDF) Rewards Every 10th drink is on us. Ask for a punch card at the counter. No app, no sign-up. Take some home Our beans, by the bag. 12 oz bags of our Araku Valley beans are $18, whole bean or ground for your brewer. Roasted every Tuesday."
+    },
+    {
+      "url": "https://say2.onrender.com/static/demo/dawn/drinks-and-bakery-menu.pdf",
+      "title": "PDF: drinks-and-bakery-menu.pdf",
+      "text": "Dawn & Drizzle Drinks & Bakery Menu · 49 Church Street, Riverton · (515) 555-0148 COFFEE Araku Valley Pour-Over $5.50 Single-origin arabica from the Araku Valley hills of Andhra Pradesh, India. Jaggery, plum, cocoa. Chicory Filter Coffee $4.75 South Indian style decoction with 20% chicory and frothy hot milk, served in a steel tumbler. Honey Drizzle Latte $6.25 Signature latte with local wildflower honey and cinnamon. Cardamom Cold Brew $5.50 Steeped 18 hours with green cardamom. Espresso $3.25 Americano $3.75 Cappuccino $4.75 Latte $5.00 (12 oz) / $5.75 (16 oz) Mocha $5.75 Milk: whole, oat or almond (oat or almond +$0.75). Extra shot +$1.00. Decaf available for every espresso drink. TEA & MORE Masala Chai $4.75 House spice blend, simmered with milk. Saffron Milk (Kesar Doodh) $5.25 Warm milk with saffron, cardamom and pistachio. Matcha Latte $5.50 Mango Lassi $5.50 Fresh Lemonade $4.00 Hot Chocolate $4.25 BAKERY Butter Croissant $4.25 Cardamom Bun $4.75 Banana Walnut Bread $3.95 Honey Cake (slice) $5.50 Daniel's grandmother's recipe, with wildflower honey. Chocolate Chip Cookie $2.75 Almond Cake (gluten-free) $5.25 Demo café made for the say2 hackathon project. Not a real business."
+    },
+    {
+      "url": "https://say2.onrender.com/static/demo/dawn/menu.html",
+      "title": "Menu | Dawn & Drizzle",
+      "text": "Menu | Dawn & Drizzle Menu Brunch, all day. (V) vegetarian · (VG) vegan · (GF) gluten-friendly. Drinks and bakery are on our Drinks & Bakery menu (PDF) . Breakfast Served until 11 am. Sunrise Toast V Sourdough, smashed avocado, chili crunch, lime and a soft-boiled egg. $11.50 Honey Butter Biscuit V Buttermilk biscuit with whipped honey butter and house jam. $6.00 Masala Omelette GF Three eggs with onion, tomato, green chili and cilantro, with toast. Gluten-free bread is $1.50 extra. $13.00 Drizzle Pancakes V Three buttermilk pancakes, honey drizzle, fresh berries and mascarpone. $12.50 Overnight Oats VG Oat milk, chia, mango and toasted coconut. $8.50 Paneer Bhurji Wrap V Spiced scrambled paneer, peppers and mint chutney in a whole-wheat wrap. $12.00 Morning Plate Two eggs any style, bacon or veggie sausage, crispy potatoes and toast. $14.00 All-day lunch Served from 11 am until the kitchen closes. Tikka Chicken Sandwich Grilled chicken tikka, pickled onion and mint mayo on ciabatta, with a side salad. $15.50 Roasted Veg & Hummus Bowl VG · GF Quinoa, roasted cauliflower, chickpeas, cucumber and tahini. $14.50 Church Street Grilled Cheese V Sharp cheddar and caramelized onion on sourdough, with a cup of tomato basil soup. $13.00 Harvest Salad V · GF Greens, apple, candied pecans, goat cheese and honey-mustard dressing. Add chicken $5 or tofu $3. $12.50 Tomato Basil Soup V · GF Cup $6, bowl $9. from $6.00 Kids For ages 12 and under. Mini Pancakes V Two small pancakes with fruit. $7.00 Kids Grilled Cheese V With fruit. $7.00 Allergies: we bake with wheat, dairy, eggs and tree nuts in a shared kitchen, so we can't promise any item is allergen-free. Please tell us about allergies when you order and we'll do our best."
+    },
+    {
+      "url": "https://say2.onrender.com/static/demo/dawn/visit.html",
+      "title": "Visit | Dawn & Drizzle",
+      "text": "Visit | Dawn & Drizzle Visit Come say good morning. Address: 49 Church Street, Riverton Phone: (515) 555-0148 Email: hello@dawnanddrizzle.example Hours Monday to Friday 6:30 am to 4 pm Saturday 7:30 am to 5 pm Sunday 8 am to 2 pm The kitchen stops taking food orders 30 minutes before we close. We're closed on Thanksgiving Day and Christmas Day. Good to know Parking: free 2-hour street parking on Church Street, plus a free public lot on Elm Avenue, one block north. Wifi: free for customers. The password is printed on your receipt. Laptops: welcome on weekdays. On Saturday and Sunday from 9 am to 1 pm we keep tables laptop-free for brunch. Patio: open April through October, weather permitting. Dogs are welcome on the patio and we keep water bowls out. Inside, service animals only. Accessibility: step-free entrance from Church Street and an accessible restroom. Seating: about 40 seats inside and 16 on the patio. Delivery: we don't deliver regular orders. Catering orders can be delivered, see Catering & events ."
+    },
+    {
+      "url": "https://say2.onrender.com/static/demo/dawn/catering.html",
+      "title": "Catering & events | Dawn & Drizzle",
+      "text": "Catering & events | Dawn & Drizzle Catering & events Bring the café to you. Coffee Box Serves 10. Araku Valley drip or chicory filter coffee, with cups, milk and sugar. $45 Pastry Box 12 assorted pastries: croissants, cardamom buns and banana walnut bread. $40 Sandwich Platter Serves 10. A mix of tikka chicken, grilled cheese and veggie sandwiches. $120 Please order catering at least 48 hours ahead by phone or email. Pick up at the café, or we deliver within 5 miles for $15. Private events The Upstairs Loft Our loft seats up to 30 people and is available for private events on weekday evenings, 5 pm to 9 pm. The room fee is $150, with a $400 food and drink minimum. Email hello@dawnanddrizzle.example to book. Reservations Tables Monday to Friday we're walk-in only. For Saturday and Sunday brunch you can reserve a table online for groups of 2 to 8. Reserve a weekend table Gift cards Give someone a good morning. Gift cards from $10 to $100, sold at the counter or by phone. They never expire. Careers We're hiring. We're looking for baristas and a weekend line cook. Send a short note and your availability to hello@dawnanddrizzle.example."
+    },
+    {
+      "url": "https://say2.onrender.com/static/demo/dawn/reserve.html",
+      "title": "Reserve a weekend table | Dawn & Drizzle",
+      "text": "Reserve a weekend table | Dawn & Drizzle Weekend brunch Reserve a weekend table Saturday and Sunday tables for 2 to 8 people. This is a demo booking page, so no real bookings are taken here."
+    }
+  ],
+  "tone": "friendly",
+  "effects": true,
+  "type": "food",
+  "effect": {
+    "motion": "steam",
+    "emoji": "☕"
+  },
+  "brand": "#9C6219",
+  "theme": "auto"
+}

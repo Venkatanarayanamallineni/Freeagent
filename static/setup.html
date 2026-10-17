@@ -9,7 +9,6 @@
 <link rel="apple-touch-icon" href="/static/brand/say2_icon_180.png">
 <meta name="description" content="Paste a link. say2 reads every page and PDF, then gives your website a front desk that answers in your voice, with sources.">
 <link rel="preload" href="/static/brand/say2_wordmark.svg" as="image">
-<link rel="preload" href="/static/brand/wing.webp" as="image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
@@ -20,7 +19,7 @@
   try {
     const q = new URLSearchParams(location.search);
     const calmNow = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (q.has("intro") || (!calmNow && !sessionStorage.getItem("say2_film"))) document.documentElement.classList.add("film-on");
+    if (q.has("intro") || (!calmNow && !localStorage.getItem("say2_film"))) document.documentElement.classList.add("film-on");
   } catch (e) {}
 </script>
 <style>
@@ -135,6 +134,7 @@
   h1{font:400 clamp(52px,7vw,104px)/.95 var(--serif);letter-spacing:-.02em;margin:0 0 24px}
   .rise{animation:rise .7s var(--spring) both;animation-delay:calc(var(--d,0) * 70ms)}
   @keyframes rise{from{opacity:0;transform:translateY(24px)}}
+  h1 .l1{display:block;white-space:nowrap}
   #word{display:inline-block;font-style:italic;color:var(--accent-text);transition:color 1.2s,transform .45s,opacity .45s}
   #word.out{opacity:0;transform:translateY(-30%)}
   .lead{font-size:19px;color:var(--muted);max-width:38ch;margin:0 0 30px}
@@ -148,7 +148,11 @@
   .door button:active{transform:scale(.98)}
   .door button:disabled{opacity:.65;cursor:wait}
   #err{min-height:24px;margin:12px 0 0;color:var(--err);font-size:15px}
-  .under{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+  .under{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;margin-bottom:16px}
+  .btn2{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;border:1px solid var(--line-strong);color:var(--ink);text-decoration:none;font-weight:500;font-size:15.5px;transition:background .3s,border-color .3s,transform .3s var(--spring)}
+  .btn2:hover{background:var(--brass-soft);border-color:var(--brass);transform:translateY(-1px)}
+  .proof{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .proof i{width:7px;height:7px;border-radius:50%;background:#5FA37A;box-shadow:0 0 0 4px rgba(95,163,122,.18)}
   .chips{display:flex;flex-wrap:wrap;gap:8px}
   .chips span{font-size:13.5px;padding:4px 12px;border-radius:999px;color:var(--muted);border:1px solid var(--line)}
   .sample{font-size:14.5px;color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--brass)}
@@ -187,6 +191,11 @@
   .ins-head .seal{width:44px;flex:none;font-size:24px}
   .ins-head b{display:block;font:400 28px/1.05 var(--serif)}
   .ins-head small{color:var(--muted);font-size:14.5px}
+  .owner{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 20px 0;padding:12px 14px;border:1px dashed var(--line-strong);border-radius:14px}
+  .owner b{display:block;font-weight:500;font-size:14.5px}
+  .owner small{display:block;color:var(--muted);font-size:13px;line-height:1.45;margin-top:2px}
+  .owner .ghost{flex:none;white-space:nowrap}
+  .hint-sm{margin:6px 0 0;font-size:12.5px;color:var(--muted);line-height:1.45;max-width:46ch}
   .tabs{display:flex;gap:4px;margin:18px 20px 0;padding:4px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
   .tabs button{flex:1;border:none;background:none;font:inherit;font-size:13.5px;line-height:1.25;color:var(--muted);padding:8px 6px;white-space:nowrap;border-radius:999px;cursor:pointer;transition:background .3s,color .3s,box-shadow .3s}
   .tabs button:hover{color:var(--ink)}
@@ -406,8 +415,8 @@
   @keyframes n-wipe{to{-webkit-mask-position:0 100%;mask-position:0 100%}}
   #film .name > div{position:relative;width:clamp(220px,32vw,480px);display:grid;place-items:center}
   #film .name img{position:relative;width:100%;height:auto;filter:brightness(.6) drop-shadow(0 20px 46px rgba(120,20,34,.18))}
-  #film .skip{position:absolute;right:22px;bottom:18px;z-index:3;font:400 12px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#4d4740;background:none;border:none;padding:8px;cursor:pointer;transition:color .3s}
-  #film .skip:hover,#film .skip:focus-visible{color:#9a9288}
+  #film .skip{position:absolute;right:22px;bottom:18px;z-index:3;font:400 12px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:#8a8278;background:none;border:none;padding:8px;cursor:pointer;transition:color .3s}
+  #film .skip:hover,#film .skip:focus-visible{color:#e2dbd0}
 
   @media (max-width:960px){
     .hero{grid-template-columns:minmax(0,1fr);min-height:0;padding-top:40px;gap:28px}
@@ -425,7 +434,11 @@
     .specs{grid-template-columns:1fr 1fr}
     .row2{grid-template-columns:1fr}
   }
-  @media (max-width:560px){ .tabs .full{display:none} .tabs .short{display:inline} h1{font-size:46px} .door button{padding:0 16px;font-size:15px} .door input{padding:12px 12px;font-size:16px} .grid{grid-template-columns:1fr} .bar nav a.opt{display:none} .say{display:none} }
+  @media (max-width:560px){ .tabs .full{display:none} .tabs .short{display:inline} h1{font-size:46px} .door button{padding:0 16px;font-size:15px} .door input{padding:12px 12px;font-size:16px} .grid{grid-template-columns:1fr} .bar nav a.opt{display:none} .say{left:-2%;bottom:-4%;max-width:220px;font-size:14px;padding:10px 13px} .under .proof{font-size:13px}
+    /* story on small phones: one layer per step, text kept clear of the sticky mock */
+    .stage.s3 .pdf{opacity:0;transform:perspective(700px) rotateY(-30deg)}
+    .mchat{width:80%;right:4%}
+    .beats article{min-height:78vh;justify-content:flex-end;padding-bottom:9vh} }
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation:none!important;transition:none!important}
     .eras li{opacity:1;transform:none}.eras::before,.pipe::before{transform:none}
@@ -451,14 +464,16 @@
     </g>
   </svg>
   <div class="name"><div><img src="/static/brand/say2_wordmark.svg" alt="say2"></div></div>
-  <div class="flyer" aria-hidden="true"><img class="wing" src="/static/brand/wing.webp" alt=""></div>
+  <div class="flyer" aria-hidden="true"><img class="wing" alt=""></div>
   <button class="skip" id="filmSkip" type="button">Skip</button>
 </div>
 <script>
 (() => {
   const root = document.documentElement, film = document.getElementById("film");
   if (!root.classList.contains("film-on")) { film.remove(); return; }
-  try { sessionStorage.setItem("say2_film", "1"); } catch (e) {}
+  try { localStorage.setItem("say2_film", "1"); } catch (e) {}
+  film.querySelector(".wing").src = "/static/brand/wing.webp";
+  document.getElementById("filmSkip").focus({ preventScroll: true });
   let done = false;
   const end = () => {
     if (done) return; done = true;
@@ -496,20 +511,21 @@
   <!-- ================= HERO ================= -->
   <section class="hero">
     <div>
-      <h1 class="rise" aria-label="Your website, now taking questions.">Your <span id="word">café's</span> website, now taking questions.</h1>
+      <h1 class="rise" aria-label="Your website, now taking questions."><span class="l1">Your <span id="word">café's</span></span> website, now taking questions.</h1>
       <p class="lead rise" style="--d:2">Paste a link. We read every page, every PDF, every bit of fine print. Your customers get answers in seconds, in your voice, with sources.</p>
 
       <form id="f" class="rise" style="--d:3" novalidate>
         <div class="door">
           <label for="url" class="sr">Your website link</label>
-          <input id="url" type="url" placeholder="https://yourbusiness.com" autocomplete="url" required>
+          <input id="url" type="text" inputmode="url" placeholder="yourbusiness.com" autocomplete="url" autocapitalize="off" spellcheck="false" required>
           <button id="go" type="submit">Hire my assistant</button>
         </div>
         <p id="err" role="alert"></p>
         <div class="under">
-          <div class="chips"><span>Any public site</span><span>No sign-up</span><span>One line of code</span></div>
-          <a class="sample" id="sample" href="#" target="_blank" rel="noopener">Or try a live example ↗</a>
+          <a class="btn2" id="sample" href="#" target="_blank" rel="noopener">Try a live example <span aria-hidden="true">↗</span></a>
+          <span class="proof" title="Measured on a large university site"><i aria-hidden="true"></i>2.7 s per answer · $0.004</span>
         </div>
+        <div class="chips"><span>Any public site</span><span>No sign-up</span><span>One line of code</span></div>
       </form>
 
       <div class="printer" id="printer" aria-live="polite">
@@ -521,6 +537,10 @@
         <div class="ins-head">
           <span class="seal mono-on" id="insSeal" aria-hidden="true"><span class="mono" id="insMono"></span></span>
           <div><b id="insTitle">Your assistant is hired.</b><small id="insSub">Here's how to put it to work.</small></div>
+        </div>
+        <div class="owner" id="owner" hidden>
+          <div><b>Your private owner link</b><small>Save it somewhere safe. Open it in any browser to get your Back office back. Don't share it.</small></div>
+          <button class="ghost" id="copyOwner" type="button">Copy owner link</button>
         </div>
         <div class="tabs" role="tablist" aria-label="Install options">
           <button role="tab" id="t1" aria-controls="p1" aria-selected="true"><span class="full">Add it myself</span><span class="short">Myself</span></button>
@@ -556,6 +576,14 @@
                 <label><input type="radio" name="tone" value="friendly" checked><span>Warm</span></label>
                 <label><input type="radio" name="tone" value="playful"><span>Witty</span></label>
               </div>
+            </div>
+            <div>
+              <span class="lbl">Reading depth</span>
+              <div class="seg" role="radiogroup" aria-label="Reading depth">
+                <label><input type="radio" name="depth" value="full" checked><span>Whole site</span></label>
+                <label><input type="radio" name="depth" value="smart"><span>Smart pick</span></label>
+              </div>
+              <p class="hint-sm">Whole site gives the best answers. Smart pick reads only the pages that match each question, so big sites cost less.</p>
             </div>
             <div>
               <span class="lbl">Chat look</span>
@@ -611,37 +639,8 @@
         <img class="seal-logo logo-d" src="/static/brand/say2_icon_dark_512.png" alt="">
         <svg class="think" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48"/></svg>
       </div>
-      <div class="say" id="say">Our oat latte is $5.25. Want the full drinks menu?</div>
+      <div class="say" id="say">Our chicory filter coffee is $4.75. Want the full drinks menu?</div>
     </div>
-  </section>
-
-  <!-- ================= ERA STORY ================= -->
-  <section class="era" id="era">
-    <h2>Every era gave small business one tool.</h2>
-    <ol class="eras">
-      <li>
-        <span class="yr">1879</span>
-        <span class="ico" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M3.5 20.5h17"/><path d="M5 20.5v-9h14v9"/><path d="M7.5 11.5v-6h6v6"/><path d="M15.5 8.5h3v3"/><path d="M8 14.5h2M12 14.5h2M8 17.5h2M12 17.5h2"/></svg></span>
-        <b>The cash register</b>
-        <p>Owners stopped losing money.</p>
-        <small>James Ritty's “Incorruptible Cashier,” Dayton, Ohio</small>
-      </li>
-      <li>
-        <span class="yr">1974</span>
-        <span class="ico" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M4 5v14M6.5 5v14M8 5v14M11 5v14M13.5 5v14M15 5v14M18 5v14M20 5v14"/></svg></span>
-        <b>The barcode scanner</b>
-        <p>Owners stopped losing time.</p>
-        <small>First scan: a pack of gum in Troy, Ohio</small>
-      </li>
-      <li class="now">
-        <span class="yr">Today</span>
-        <span class="ico" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M4 5h16v10H10l-5 4v-4H4z"/><path d="M8 9.5h8M8 12h5"/></svg></span>
-        <b>The front desk</b>
-        <p>Owners stop losing the customer who asked at 11 pm.</p>
-        <small>say2</small>
-      </li>
-    </ol>
-    <p class="era-close">Big chains have call centers. The corner café has nobody. <span>Until now.</span></p>
   </section>
 
   <!-- ================= SCROLL STORY ================= -->
@@ -687,6 +686,35 @@
     </div>
   </section>
 
+  <!-- ================= ERA STORY ================= -->
+  <section class="era" id="era">
+    <h2>Every era gave small business one tool.</h2>
+    <ol class="eras">
+      <li>
+        <span class="yr">1879</span>
+        <span class="ico" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M3.5 20.5h17"/><path d="M5 20.5v-9h14v9"/><path d="M7.5 11.5v-6h6v6"/><path d="M15.5 8.5h3v3"/><path d="M8 14.5h2M12 14.5h2M8 17.5h2M12 17.5h2"/></svg></span>
+        <b>The cash register</b>
+        <p>Owners stopped losing money.</p>
+        <small>James Ritty's “Incorruptible Cashier,” Dayton, Ohio</small>
+      </li>
+      <li>
+        <span class="yr">1974</span>
+        <span class="ico" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M4 5v14M6.5 5v14M8 5v14M11 5v14M13.5 5v14M15 5v14M18 5v14M20 5v14"/></svg></span>
+        <b>The barcode scanner</b>
+        <p>Owners stopped losing time.</p>
+        <small>First scan: a pack of gum in Troy, Ohio</small>
+      </li>
+      <li class="now">
+        <span class="yr">Today</span>
+        <span class="ico" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M4 5h16v10H10l-5 4v-4H4z"/><path d="M8 9.5h8M8 12h5"/></svg></span>
+        <b>The front desk</b>
+        <p>Owners stop losing the customer who asked at 11 pm.</p>
+        <small>say2</small>
+      </li>
+    </ol>
+    <p class="era-close">Big chains have call centers. The corner café has nobody. <span>Until now.</span></p>
+  </section>
+
   <!-- ================= FEATURES ================= -->
   <section class="feats">
     <h2>Small bubble. Serious job description.</h2>
@@ -728,6 +756,7 @@
     <nav>
       <a class="mark" href="/"><img src="/static/brand/say2_icon_dark_64.png" alt="say2" width="44" height="44" style="border-radius:50%"></a>
       <a href="/static/privacy.html">Privacy &amp; terms</a>
+      <a href="/?intro">Replay intro</a>
       <a href="#" class="gh" target="_blank" rel="noopener" hidden>GitHub</a>
     </nav>
     <small>Built with NVIDIA Nemotron on Nebius Token Factory · Open source, AGPL-3.0</small>
@@ -737,7 +766,7 @@
 <script>
 /* ===== settings you may want to change ===== */
 const REPO = "";                         // leave empty: set REPO_URL in .env / Render instead
-const DEMO_SITE = "thecafeames_com";     // a site saved in demo_data/ for the "live example" link
+const DEMO_SITE = "dawnanddrizzle";      // our demo café, saved in demo_data/; its site lives in static/demo/dawn/
 
 const $ = id => document.getElementById(id);
 const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -750,9 +779,9 @@ showRepo(REPO);
 fetch("/config").then(r => r.json()).then(c => showRepo(c.repo)).catch(() => {});
 
 // one quiet reveal per section, the first time it comes into view
-const reveal = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); reveal.unobserve(e.target); } }), { threshold: .3 });
+const reveal = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); reveal.unobserve(e.target); } }), { threshold: .12 });
 ["era", "hood"].forEach(id => reveal.observe(document.getElementById(id)));
-$("sample").href = `/static/preview.html?site=${DEMO_SITE}&open=1`;
+$("sample").href = "/static/demo/dawn/index.html";   // a real-looking café site with say2 in the corner
 
 /* ---------- light / dark switch (landing page only, the chat keeps its own colors) ---------- */
 const darkQuery = matchMedia("(prefers-color-scheme: dark)");
@@ -775,7 +804,17 @@ paintThemeButton();
 const TOKENS_KEY = "fa_tokens";
 function getTokens() { try { return JSON.parse(localStorage.getItem(TOKENS_KEY) || "{}"); } catch { return {}; } }
 function saveToken(sid, tok) { try { const t = getTokens(); t[sid] = tok; localStorage.setItem(TOKENS_KEY, JSON.stringify(t)); } catch {} }
-const siteIdOf = url => { try { return new URL(url).host.toLowerCase().replace(/[^a-z0-9_\-]/g, "_"); } catch { return ""; } };
+(() => {
+  const m = location.hash.match(/^#own=([a-z0-9_\-]{1,100})\.([A-Za-z0-9_\-]{16,64})$/);
+  if (!m) return;
+  saveToken(m[1], m[2]);
+  history.replaceState(null, "", location.pathname);
+  addEventListener("load", () => {
+    const say = document.getElementById("say");
+    if (say) say.textContent = `Welcome back. This browser now has your owner key for ${m[1].replace(/_/g, ".")}. Paste your link to open your install card.`;
+  });
+})();
+const siteIdOf = url => { try { return new URL(url).host.toLowerCase().replace(/^www\./, "").replace(/[^a-z0-9_\-]/g, "_"); } catch { return ""; } };
 
 /* ---------- line icons ---------- */
 const P = d => `<path pathLength="1" d="${d}"/>`;
@@ -804,11 +843,11 @@ function mood(el, m) { el.classList.remove("thinking", "happy", "sad"); if (m) {
 
 /* ---------- businesses shown on the page (all made up) ---------- */
 const skins = [
-  { label: "café", word: "café's", c: "#6B4A3A", l: "#C9B8A8", icon: "coffee", say: "Our oat latte is $5.25. Want the full drinks menu?",
-    st: { url: "junipercafe.example", title: "Juniper Café", tag: "Open daily, 7 am to 3 pm",
-      rows: [["Breakfast", "$6+"], ["Lunch", "$11+"], ["Catering", "Call us"], ["Gift cards", "$25"], ["Contact", "Page"]],
-      pdf: "menu.pdf", pdfRows: [["Oat latte", "$5.25"], ["Croissant", "$4"], ["Avocado toast", "$11"]],
-      q: "How much is an oat latte?", a: "Our oat latte is $5.25. Want the full drinks menu?", chip: "View PDF ↗" } },
+  { label: "café", word: "café's", c: "#6B4A3A", l: "#C9B8A8", icon: "coffee", say: "Our chicory filter coffee is $4.75. Want the full drinks menu?",
+    st: { url: "dawnanddrizzle.example", title: "Dawn & Drizzle", tag: "Mon to Fri, 6:30 am to 4 pm",
+      rows: [["Breakfast", "$6+"], ["All-day lunch", "$12.50+"], ["Catering", "From $40"], ["Gift cards", "$10+"], ["Visit", "Page"]],
+      pdf: "drinks-menu.pdf", pdfRows: [["Chicory filter coffee", "$4.75"], ["Araku pour-over", "$5.50"], ["Honey cake", "$5.50"]],
+      q: "How much is the chicory filter coffee?", a: "Our chicory filter coffee is $4.75. Want the full drinks menu?", chip: "View PDF ↗" } },
   { label: "bookstore", word: "bookstore's", c: "#2E3A4F", l: "#B9C0CA", icon: "book", say: "Kids story hour is Saturday at 10. Want the events list?",
     st: { url: "folioandfinch.example", title: "Folio & Finch Books", tag: "Open 10 am to 8 pm",
       rows: [["New arrivals", "Weekly"], ["Used books", "Half off"], ["Book club", "Thursdays"], ["Gift cards", "$20+"], ["Events", "Page"]],
@@ -837,7 +876,7 @@ const skins = [
 ];
 
 /* ---------- hero: one business at a time ---------- */
-let paused = false;
+let paused = false, typing = false;
 function setSkin(k) {
   root.style.setProperty("--skin", k.c);
   root.style.setProperty("--skin-light", k.l);
@@ -894,9 +933,10 @@ if (!calm) setInterval(() => {
   if (document.hidden) return;
   step = (step + 1) % order.length;
   const i = order[step];
-  if (i === -1) { if (!paused) showSay2(); return; }   // the story mock keeps showing businesses
-  if (!paused) setSkin(skins[i]);
-  setMock(i, storyVisible);
+  const still = paused || typing;                       // never swap under someone who is typing
+  if (i === -1) { if (!still) showSay2(); return; }
+  if (!still) setSkin(skins[i]);
+  if (!storyVisible) setMock(i, false);                  // 4. the story only changes business while it is off screen
 }, 5000);
 
 let countTimer = null;
@@ -994,6 +1034,7 @@ $("saveStyle").onclick = async () => {
     brand: pick ? pick.value : $("custom").value,
     effects: $("effects").checked,
     theme: document.querySelector("input[name=ctheme]:checked").value,
+    depth: document.querySelector("input[name=depth]:checked").value,
     logo: $("logo").value.trim(),
   };
   if (sym) body.emoji = SYM_TO_EMOJI[sym];
@@ -1013,6 +1054,13 @@ $("saveStyle").onclick = async () => {
 
 function showInstall(sid, info, name, token) {
   current = { sid, token: token || "" };
+  const dep = document.querySelector(`input[name=depth][value="${info.depth === "smart" ? "smart" : "full"}"]`); if (dep) dep.checked = true;
+  $("owner").hidden = !token;
+  if (token) $("copyOwner").onclick = async () => {
+    const link = `${location.origin}/#own=${sid}.${token}`;
+    try { await navigator.clipboard.writeText(link); $("copyOwner").textContent = "Copied. Keep it safe."; }
+    catch { prompt("Copy your owner link:", link); }
+  };
   const src = `${location.origin}/static/widget.js`;
   const code = `<script src="${src}" data-site="${sid}"><\/script>`;
   const prevUrl = `${location.origin}/static/preview.html?site=${sid}`;
@@ -1071,11 +1119,16 @@ function fail(msg) {
   resetGo();
 }
 
+$("url").addEventListener("focus", () => { typing = true; });
+$("url").addEventListener("blur", () => { typing = false; });
+
 $("f").addEventListener("submit", async e => {
   e.preventDefault();
   $("err").textContent = "";
-  const url = $("url").value.trim();
-  if (!/^https?:\/\/\S+\.\S+/.test(url)) { $("err").textContent = "That doesn't look like a full link. Try https://yourbusiness.com"; $("url").focus(); mood(seal, "sad"); return; }
+  let url = $("url").value.trim();
+  if (url && !/^https?:\/\//i.test(url)) url = "https://" + url.replace(/^\/+/, "");   // "mycafe.com" is fine
+  if (!/^https?:\/\/[^\s\/]+\.[^\s\/]{2,}/i.test(url)) { $("err").textContent = "That doesn't look like a website. Try something like yourbusiness.com"; $("url").focus(); mood(seal, "sad"); return; }
+  $("url").value = url;
 
   const body = { url, token: getTokens()[siteIdOf(url)] || undefined };
 
@@ -1125,11 +1178,12 @@ $("f").addEventListener("submit", async e => {
   const sid = result.site_id;
   let info = {};
   try { info = await (await fetch(`/site/${sid}`)).json(); } catch {}
-  const name = info.name || "your business";
+  const realName = (info.name || "").trim();
+  const name = realName || "your business";
 
   if (info.brand) { root.style.setProperty("--skin", info.brand); root.style.setProperty("--skin-light", tint(info.brand)); }
-  $("word").textContent = name + "'s";
-  showMono(name.trim().charAt(0).toUpperCase());
+  $("word").textContent = realName ? (/s$/i.test(realName) ? realName + "’" : realName + "’s") : "own";
+  showMono((realName || "say2").charAt(0).toUpperCase());
   mood(seal, "happy");
   $("say").textContent = token ? `Hired. I'm the new front desk at ${name}.` : `${name} already has me. Say hi in the corner.`;
 

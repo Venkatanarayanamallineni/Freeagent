@@ -1,0 +1,87 @@
+﻿question,type,pass,problems,fake,inbox,seconds,tokens_in,tokens_out,cost,answer
+What time do you open on weekdays?,answer,True,,0,False,1.1,2960,109,0.00043,"We open at 6:30 am on weekdays (Monday-Friday).
+
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+What are your Sunday hours?,answer,True,,0,False,0.66,2957,85,0.00042,"Our Sunday hours are 8 am to 2 pm.  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+How late are you open on Saturday?,answer,True,,0,False,0.88,2959,119,0.00043,"We’re open until 5 pm on Saturdays.  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+u guys open sunday?,answer,True,,0,False,0.85,2957,118,0.00043,"Yes, we’re open on Sundays from 8 am to 2 pm.  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+What's your phone number?,answer,True,,0,False,0.75,2957,104,0.00043,"Our phone number is (515) 555-0148.  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+Where are you located?,answer,True,,0,False,0.95,2956,165,0.00045,"We're located at 49 Church Street, Riverton.  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+How much is the chicory filter coffee?,answer,True,,0,False,1.04,2960,172,0.00045,"The chicory filter coffee costs $4.75.  
+Source: https://say2.onrender.com/static/demo/dawn/drinks-and-bakery-menu.pdf"
+What is Araku coffee?,answer,True,,0,False,1.11,2957,191,0.00046,"Araku coffee is a single-origin Arabica grown in the Araku Valley hills of Andhra Pradesh, India, known for flavors of jaggery, plum and cocoa.  
+Source: https://say2.onrender.com/static/demo/dawn/index.html"
+latee price?,answer,True,,0,False,1.54,2955,266,0.00049,"Our latte costs $5.00 for a 12-oz cup and $5.75 for a 16-oz cup.  
+Source: https://say2.onrender.com/static/demo/dawn/index.html"
+Do you have oat milk?,answer,True,,0,False,1.21,2958,204,0.00047,"Yes, we offer oat milk as an alternative for our coffee drinks (it adds $0.75 to the price).  
+Source: https://say2.onrender.com/static/demo/dawn/drinks-and-bakery-menu.pdf"
+Anything vegan?,answer,True,,0,False,5.24,2956,1232,0.00088,"We have several vegan choices: our Overnight Oats ($8.50), the Roasted Veg & Hummus Bowl ($14.50), Fresh Lemonade ($4.00), and you can make most drinks vegan by choosing oat or almond milk (+$0.75).
+
+Source: https://say2.onrender.com/static/demo/dawn/menu.html"
+Is there something gluten free for lunch?,answer,True,,0,False,2.19,2959,398,0.00054,"Yes! Our gluten-friendly lunch picks include the Roasted Veg & Hummus Bowl ($14.50), Harvest Salad ($12.50) and Tomato Basil Soup (cup $6 / bowl $9).  
+Source: https://say2.onrender.com/static/demo/dawn/menu.html"
+How much is the Tikka Chicken Sandwich and what comes with it?,answer,True,,0,False,1.07,2966,226,0.00048,"The Tikka Chicken Sandwich is $15.50 and includes grilled chicken tikka, pickled onion, mint mayo on ciabatta, served with a side salad.  
+Source: https://say2.onrender.com/static/demo/dawn/menu.html"
+Do you have a kids menu?,answer,True,,0,False,1.26,2958,209,0.00047,"Yes! Our kids menu offers mini pancakes ($7) and a kids grilled cheese with fruit ($7).
+
+Source: https://say2.onrender.com/static/demo/dawn/menu.html"
+Is there parking?,answer,True,,0,False,1.12,2955,116,0.00043,"Yes—there’s free 2-hour street parking on Church Street and a free public lot on Elm Avenue, one block north.  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+Do you have wifi?,answer,True,,0,False,0.85,2956,141,0.00044,"Yes, we offer free wifi for customers—the password is printed on your receipt.  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+Can I bring my dog?,answer,True,,0,False,0.91,2957,139,0.00044,"Yes—dogs are welcome on our patio (we keep water bowls out there); inside, only service animals are allowed.  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+Can I work on my laptop on a Saturday morning?,answer,True,,0,False,1.91,2962,364,0.00053,"You can use your laptop on weekdays; on Saturdays we keep tables laptop-free from 9 am to 1 pm for brunch, so you’d need to wait until after 1 pm or come on a weekday.  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+Do you deliver?,answer,True,,0,False,1.44,2955,269,0.00049,"We don’t deliver regular menu items, but catering orders can be delivered within a 5-mile radius for a $15 fee (please order at least 48 hours ahead).  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+How far ahead do I need to order catering?,answer,True,,0,False,0.98,2962,167,0.00045,"You need to place catering orders at least 48 hours ahead, which you can do by phone or email.  
+Source: https://say2.onrender.com/static/demo/dawn/catering.html"
+How much is the coffee box for an office meeting?,answer,True,,0,False,0.81,2962,135,0.00044,"The coffee box for an office meeting costs $45.  
+Source: https://say2.onrender.com/static/demo/dawn/catering.html"
+Can I book the upstairs room for a party?,answer,True,,0,False,3.14,2961,651,0.00065,"Yes, you can book our Upstairs Loft for parties on weekday evenings (5 pm–9 pm); the room fee is $150 with a $400 food-and-drink minimum. To arrange it, please email hello@dawnanddrizzle.example or call us.
+
+Action: (515) 555-0148
+
+Source: https://say2.onrender.com/static/demo/dawn/catering.html"
+Can I reserve a table for Saturday brunch?,answer,True,,0,False,2.34,2961,469,0.00057,"Yes, you can reserve a table for Saturday brunch online for parties of 2-8.
+Action: https://say2.onrender.com/static/demo/dawn/reserve.html
+Source: https://say2.onrender.com/static/demo/dawn/reserve.html"
+Do you sell your coffee beans?,answer,True,,0,False,1.06,2958,197,0.00046,"Yes! We sell 12-oz bags of our Araku Valley beans—whole bean or ground—for $18.  
+Source: https://say2.onrender.com/static/demo/dawn/index.html"
+Are you hiring?,answer,True,,0,False,1.07,2955,178,0.00046,"Yes, we’re hiring baristas and a weekend line cook—just send a note and your availability to hello@dawnanddrizzle.example.  
+Source: https://say2.onrender.com/static/demo/dawn/catering.html"
+Something sweet under 5 bucks?,answer,True,,0,False,4.17,2959,874,0.00073,"- Chocolate Chip Cookie, $2.75  
+- Banana Walnut Bread, $3.95  
+- Butter Croissant, $4.25  
+- Cardamom Bun, $4.75  
+
+Source: https://say2.onrender.com/static/demo/dawn/drinks-and-bakery-menu.pdf"
+Do you have high chairs?,missing,True,,0,True,2.54,2957,518,0.00059,I’m not sure if we have high chairs on hand—you can give us a call at (515) 555-0148 or email hello@dawnanddrizzle.example to confirm.
+Is there EV charging?,missing,True,,0,True,1.98,2956,405,0.00055,I’m not sure about EV charging—you can give us a call at (515) 555-0148 or email hello@dawnanddrizzle.example to check.
+Do you have live music?,missing,True,,0,True,4.01,2957,840,0.00072,I’m not sure about live music details—you can call us at (515) 555-0148 or email hello@dawnanddrizzle.example for the latest.
+Is there a student discount?,missing,True,,0,True,2.59,2957,505,0.00059,"I’m not sure about a student discount—you can reach us at (515) 555-0148 to ask.  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+Can you make a custom birthday cake?,missing,True,,0,True,2.98,2959,598,0.00062,"I’m not certain about custom birthday cakes—our bakery menu lists items like honey-cake slices and pastries, but I don’t have details on custom orders. You can call us at (515) 555-0148 or email hello@dawnanddrizzle.example to ask."
+Can I pay with Apple Pay?,missing,True,,0,True,1.84,2958,366,0.00053,I’m not sure about Apple Pay—you can reach us at (515) 555-0148 or hello@dawnanddrizzle.example to check.
+Is there a drive-thru?,missing,True,,0,True,1.98,2958,387,0.00054,I’m not sure if we have a drive-thru—you can give us a call at (515) 555-0148 to check.
+Do you have a happy hour?,missing,True,,0,True,4.07,2958,852,0.00073,I’m not sure about happy hour details—you can call us at (515) 555-0148 or email hello@dawnanddrizzle.example to ask.
+Do you have board games to play?,missing,True,,0,True,2.4,2959,541,0.0006,I’m not sure if we have board games available—let me check with the team. You can call us at (515) 555-0148 or email hello@dawnanddrizzle.example.
+Do you sell car tires?,notsold,True,,0,False,1.96,2957,356,0.00053,"No car tires here—unless you count our buttery croissants as a spare tire! Want to take a look at our bakery menu?
+
+Source: https://say2.onrender.com/static/demo/dawn/drinks-and-bakery-menu.pdf"
+Can I get a haircut here?,notsold,True,,0,False,1.84,2959,354,0.00053,"No haircuts here—unless you count our latte art as a fresh ‘do’! Want to check out our brunch menu instead?  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+Do you sell laptops?,notsold,True,,0,False,1.76,2957,315,0.00051,"No laptops here—unless you count our pancakes as a flat, round device! Want to see our drinks and bakery menu?
+
+Source: https://say2.onrender.com/static/demo/dawn/drinks-and-bakery-menu.pdf"
+Can I book a hotel room?,notsold,True,,0,False,1.82,2958,355,0.00053,"No hotel rooms here—unless you’d like to linger over our brunch instead. Want to see our menu or check our hours?  
+Source: https://say2.onrender.com/static/demo/dawn/visit.html"
+Do you do oil changes?,notsold,True,,0,False,1.76,2957,331,0.00052,"No oil changes here—unless you count our espresso shots as a tune-up! Want to check out our coffee menu?
+
+Source: https://say2.onrender.com/static/demo/dawn/index.html"

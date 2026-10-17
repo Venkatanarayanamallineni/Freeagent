@@ -12,7 +12,7 @@ from PIL import Image
 from pydantic import BaseModel
 
 from ask import ask, business_name, detect_style
-from crawler import crawl
+from crawler import crawl, is_public_url, safe_get
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"],
@@ -61,7 +61,10 @@ TONE_OK = ("professional", "friendly", "playful")
 
 
 def site_id_from(url):
-    return re.sub(r"[^a-z0-9_\-]", "_", urlparse(url).netloc.lower())
+    host = urlparse(url).netloc.lower()
+    if host.startswith("www."):        # www.mycafe.com and mycafe.com are the same assistant
+        host = host[4:]
+    return re.sub(r"[^a-z0-9_\-]", "_", host)
 
 
 def load_site(site_id):
@@ -73,17 +76,6 @@ def load_site(site_id):
             with open(path, encoding="utf-8") as f:
                 return json.load(f)
     raise HTTPException(404, "Site not set up yet")
-
-
-def is_public_url(url):
-    try:
-        p = urlparse(url)
-        if p.scheme not in ("http", "https") or not p.hostname:
-            return False
-        ip = ipaddress.ip_address(socket.gethostbyname(p.hostname))
-        return not (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved)
-    except Exception:
-        return False
 
 
 def tagline(data, name):
@@ -111,7 +103,7 @@ def logo_colors(url):
         return BRAND_CACHE[url]
     out = None
     try:
-        r = requests.get(url, timeout=8, headers={"User-Agent": "say2Bot/1.0"})
+        r = safe_get(url, timeout=8)   # same public-address rules as the crawler
         img = Image.open(io.BytesIO(r.content)).convert("RGBA")
         img.thumbnail((96, 96))
         allpx = list(img.getdata())
@@ -164,6 +156,7 @@ class SettingsReq(BaseModel):
     tone: Optional[str] = None
     effects: Optional[bool] = None
     emoji: Optional[str] = None
+    depth: Optional[str] = None   # "full" reads the whole site, "smart" only matching pages (cheaper)
 
 
 class ChatReq(BaseModel):
@@ -307,6 +300,8 @@ def settings(site_id: str, req: SettingsReq, request: Request):
         data["effects"] = req.effects
     if req.theme in ("auto", "light", "dark"):
         data["theme"] = req.theme
+    if req.depth in ("full", "smart"):
+        data["depth"] = req.depth
     if req.emoji:
         data.setdefault("effect", {"motion": "twinkle"})["emoji"] = req.emoji.strip()
     save_site(site_id, data)
@@ -473,6 +468,7 @@ def site_info(site_id: str):
             "tagline": tagline(data, name),
             "effect": effect,
             "theme": data.get("theme", "auto"),
+            "depth": data.get("depth", "full"),
             "type": btype,
             "actions": [{"url": a["url"], "kind": a["kind"]} for a in (data.get("actions") or [])][:8],
             "brand": data.get("brand") or colors.get("brand", "#1f2328"),

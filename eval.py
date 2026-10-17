@@ -46,7 +46,9 @@ def groups(cell):
 
 
 def norm(s):
-    return " ".join(s.lower().replace("’", "'").split())
+    for dash in "\u2010\u2011\u2012\u2013\u2014\u2212":   # all the kinds of dash a model may print
+        s = s.replace(dash, "-")
+    return " ".join(s.lower().replace("’", "'").replace("\u00a0", " ").split())
 
 
 def known_text(data):
