@@ -143,6 +143,11 @@
   .door:focus-within{border-color:var(--line-strong);box-shadow:0 28px 56px -28px rgba(36,33,29,.5),0 0 0 4px var(--brass-soft)}
   .door input{flex:1;min-width:0;border:none;background:none;font:inherit;font-size:17px;padding:12px 18px;color:var(--ink);outline:none}
   .door input::placeholder{color:var(--placeholder)}
+   :root[data-theme=light] .door{background:#FBF8F3;border-color:rgba(36,33,29,.34);box-shadow:0 18px 40px -22px rgba(35,32,29,.45),0 1px 0 rgba(255,255,255,.9) inset}
+  :root[data-theme=light] .door:focus-within{border-color:var(--ink);box-shadow:0 18px 40px -22px rgba(35,32,29,.45),0 0 0 4px rgba(203,38,59,.14)}
+  :root[data-theme=light] .chips span{background:rgba(255,255,255,.55)}
+  :root[data-theme=light] .btn2{background:rgba(255,255,255,.55)}
+  :root[data-theme=light] .proof{color:#4A443C}
   .door button{border:none;border-radius:999px;background:var(--solid);color:var(--on-solid);font:inherit;font-weight:500;padding:0 24px;cursor:pointer;white-space:nowrap;transition:background .4s,transform .3s var(--spring)}
   .door button:hover{background:var(--solid-hover)}
   .door button:active{transform:scale(.98)}
@@ -154,16 +159,39 @@
   .proof{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
   .proof i{width:7px;height:7px;border-radius:50%;background:#5FA37A;box-shadow:0 0 0 4px rgba(95,163,122,.18)}
   .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chips span{font-size:13.5px;padding:4px 12px;border-radius:999px;color:var(--muted);border:1px solid var(--line)}
+  .chips span{font-size:14.5px;padding:5px 13px;border-radius:999px;color:var(--ink);border:1px solid var(--line-strong);opacity:.85}
   .sample{font-size:14.5px;color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--brass)}
 
-  .stage-hero{position:relative;justify-self:center;width:min(400px,74vw)}
-  .stage-hero .seal{width:78%;margin:11%;font-size:150px}
-  .ring{position:absolute;inset:0;width:100%;height:100%}
-  .ring text{font:italic 400 13px var(--serif);fill:var(--muted);letter-spacing:.06em}
-  .say{position:absolute;left:-16%;bottom:4%;max-width:260px;background:var(--glass);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:20px 20px 20px 6px;
-    padding:12px 16px;font-size:15.5px;line-height:1.4;box-shadow:var(--soft)}
-  .say.pop{animation:popin .5s var(--spring)}
+  /* hero showcase: a real-looking site with say2 answering in the corner */
+  .stage-hero{position:relative;justify-self:center;width:min(480px,100%)}
+  .win{position:relative;aspect-ratio:4/3.25;background:var(--paper-2);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    box-shadow:0 50px 90px -46px var(--skin),var(--soft);transition:box-shadow 1.2s}
+  .win-bar{display:flex;align-items:center;gap:6px;padding:9px 12px;background:var(--paper);border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
+  .win-bar i{width:9px;height:9px;border-radius:50%;background:var(--line-strong)}
+  .win-bar span{margin-left:8px;background:var(--bg);border-radius:999px;padding:2px 11px}
+  .win-body{padding:18px 20px;transition:opacity .35s}
+  .win-body.swap{opacity:0}
+  .win-body h4{margin:0 0 4px;font:400 clamp(22px,2.4vw,28px)/1 var(--serif)}
+  .win-body .wtag{margin:0 0 12px;color:var(--muted);font-size:13px}
+  .hrows{max-width:54%}
+  .hrows div{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px dashed var(--line)}
+  .hrows em{font-style:normal;color:var(--muted)}
+  .hchat{position:absolute;right:12px;bottom:14px;width:60%;display:flex;flex-direction:column;gap:7px;padding:10px 11px 12px;
+    background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px;box-shadow:var(--soft)}
+  .hc-head{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);padding-bottom:7px;border-bottom:1px solid var(--line)}
+  .hc-head b{color:var(--ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hc-head i{flex:none;width:7px;height:7px;border-radius:50%;background:#5FA37A}
+  .hc-q,.say,.hc-chip{opacity:0;transform:translateY(6px);transition:opacity .35s,transform .45s var(--spring)}
+  .hc-q.on,.say.on,.hc-chip.on{opacity:1;transform:none}
+  .hc-q{align-self:flex-end;max-width:88%;background:var(--solid);color:var(--on-solid);padding:6px 10px;border-radius:12px 12px 4px 12px;font-size:13px;line-height:1.35}
+  .say{align-self:flex-start;max-width:94%;background:var(--paper);border:1px solid var(--line);padding:7px 11px;border-radius:12px 12px 12px 4px;font-size:13px;line-height:1.4;min-height:1.4em}
+  .hc-chip{align-self:flex-start;font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 9px}
+  .hc-dots{display:none;align-self:flex-start;gap:4px;padding:8px 10px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+  .hc-dots.on{display:flex}
+  .hc-dots i{width:5px;height:5px;border-radius:50%;background:var(--muted);animation:hcdot 1s infinite}
+  .hc-dots i:nth-child(2){animation-delay:.15s}.hc-dots i:nth-child(3){animation-delay:.3s}
+  @keyframes hcdot{0%,100%{opacity:.25;transform:none}50%{opacity:1;transform:translateY(-2px)}}
+  .stage-hero .seal{position:absolute;right:-20px;bottom:-28px;width:78px;margin:0;font-size:40px;z-index:2}
   @keyframes popin{from{opacity:0;transform:translateY(8px) scale(.96)}}
 
   /* ---------- receipt ---------- */
@@ -313,9 +341,9 @@
   .stage.s2 .pdf div:nth-of-type(2) em{transition-delay:.25s}
   .stage.s2 .pdf div:nth-of-type(3) em{transition-delay:.5s}
   .stage.s3 .mchat p{opacity:1;transform:none}
-  .stage.s3 .mchat p:nth-child(2){transition-delay:.45s}
-  .stage.s3 .mchat p:nth-child(3){transition-delay:.9s}
-  .beats article{min-height:82vh;display:flex;flex-direction:column;justify-content:center}
+  .stage.s3 .mchat p:nth-child(2){transition-delay:.25s}
+  .stage.s3 .mchat p:nth-child(3){transition-delay:.5s}
+  .beats article{min-height:66vh;display:flex;flex-direction:column;justify-content:center}
   .beats .num{font:italic 400 20px var(--serif);color:var(--brass);margin-bottom:6px}
   .beats h3{font:400 clamp(38px,4.6vw,64px)/1 var(--serif);letter-spacing:-.01em;margin:0 0 14px;max-width:13ch;opacity:.25;transition:opacity .6s}
   .beats p{color:var(--muted);font-size:18.5px;max-width:34ch;margin:0;opacity:.25;transition:opacity .6s}
@@ -381,6 +409,7 @@
   /* ---------- the say2 wordmark (the owner's own lettering, in say2 red) ---------- */
   .logo{display:block;height:var(--h,40px);width:auto}
   .mark .logo{--h:46px;margin:-4px 0 -10px}
+  .mark .badge{border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.18)}
   footer .bar nav a.mark .logo{--h:38px}
 
   /* ---------- the opening: Ram Setu from above, one eagle, then the name ---------- */
@@ -420,9 +449,7 @@
 
   @media (max-width:960px){
     .hero{grid-template-columns:minmax(0,1fr);min-height:0;padding-top:40px;gap:28px}
-    .stage-hero{width:min(280px,64vw)}
-    .stage-hero .seal{font-size:100px}
-    .say{left:-8%}
+    .stage-hero .seal{right:-8px;width:66px;font-size:34px}
     .story{grid-template-columns:1fr;gap:0}
     .stage-wrap{top:64px;height:auto;padding:12px 0;z-index:2;background:linear-gradient(var(--bg) 85%,transparent)}
     .beats article{min-height:70vh}
@@ -434,11 +461,11 @@
     .specs{grid-template-columns:1fr 1fr}
     .row2{grid-template-columns:1fr}
   }
-  @media (max-width:560px){ .tabs .full{display:none} .tabs .short{display:inline} h1{font-size:46px} .door button{padding:0 16px;font-size:15px} .door input{padding:12px 12px;font-size:16px} .grid{grid-template-columns:1fr} .bar nav a.opt{display:none} .say{left:-2%;bottom:-4%;max-width:220px;font-size:14px;padding:10px 13px} .under .proof{font-size:13px}
+  @media (max-width:560px){ .tabs .full{display:none} .tabs .short{display:inline} h1{font-size:46px} .door button{padding:0 16px;font-size:15px} .door input{padding:12px 12px;font-size:16px} .grid{grid-template-columns:1fr} .bar nav a.opt{display:none} .hchat{width:74%} .hrows{max-width:100%} .win{aspect-ratio:4/3.9} .under .proof{font-size:13px}
     /* story on small phones: one layer per step, text kept clear of the sticky mock */
     .stage.s3 .pdf{opacity:0;transform:perspective(700px) rotateY(-30deg)}
     .mchat{width:80%;right:4%}
-    .beats article{min-height:78vh;justify-content:flex-end;padding-bottom:9vh} }
+    .beats article{min-height:70vh;justify-content:flex-end;padding-bottom:9vh} }
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation:none!important;transition:none!important}
     .eras li{opacity:1;transform:none}.eras::before,.pipe::before{transform:none}
@@ -494,7 +521,7 @@
 
 <header class="top">
   <div class="bar">
-    <a class="mark" href="/"><img class="logo" src="/static/brand/say2_wordmark.svg" alt="say2"></a>
+    <a class="mark" href="/" aria-label="say2 home"><img class="badge logo-l" src="/static/brand/say2_icon_64.png" alt="" width="40" height="40"><img class="badge logo-d" src="/static/brand/say2_icon_dark_64.png" alt="" width="40" height="40"><img class="logo" src="/static/brand/say2_wordmark.svg" alt="say2"></a>
     <nav>
       <a href="#how" class="opt">How it works</a>
       <a href="#hood" class="opt">Under the hood</a>
@@ -630,8 +657,17 @@
     </div>
 
     <div class="stage-hero" aria-hidden="true">
-      <svg class="ring" viewBox="0 0 200 200"><defs><path id="circ" d="M100,100 m-92,0 a92,92 0 1,1 184,0 a92,92 0 1,1 -184,0"/></defs>
-        <text><textPath href="#circ">at your service ✦ answers on the house ✦ open even when you're not ✦ </textPath></text></svg>
+      <div class="win">
+        <div class="win-bar"><i></i><i></i><i></i><span id="hUrl">dawnanddrizzle.example</span></div>
+        <div class="win-body" id="hBody"><h4 id="hTitle">Dawn &amp; Drizzle</h4><p class="wtag" id="hTag"></p><div class="hrows" id="hRows"></div></div>
+        <div class="hchat">
+          <div class="hc-head"><i></i><b id="hcName">Dawn &amp; Drizzle</b><span>· replies instantly</span></div>
+          <p class="hc-q on" id="hcQ">How much is the chicory filter coffee?</p>
+          <div class="hc-dots" id="hcDots"><i></i><i></i><i></i></div>
+          <p class="say on" id="say">Our chicory filter coffee is $4.75. Want the full drinks menu?</p>
+          <span class="hc-chip on" id="hcChip">View PDF ↗</span>
+        </div>
+      </div>
       <div class="seal" id="seal">
         <svg class="glyph draw" id="glyph" viewBox="0 0 24 24"></svg>
         <span class="mono" id="mono"></span>
@@ -639,7 +675,6 @@
         <img class="seal-logo logo-d" src="/static/brand/say2_icon_dark_512.png" alt="">
         <svg class="think" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48"/></svg>
       </div>
-      <div class="say" id="say">Our chicory filter coffee is $4.75. Want the full drinks menu?</div>
     </div>
   </section>
 
@@ -756,7 +791,7 @@
     <nav>
       <a class="mark" href="/"><img src="/static/brand/say2_icon_dark_64.png" alt="say2" width="44" height="44" style="border-radius:50%"></a>
       <a href="/static/privacy.html">Privacy &amp; terms</a>
-      <a href="/?intro">Replay intro</a>
+      <a href="/static/setup.html?intro">Replay intro</a>
       <a href="#" class="gh" target="_blank" rel="noopener" hidden>GitHub</a>
     </nav>
     <small>Built with NVIDIA Nemotron on Nebius Token Factory · Open source, AGPL-3.0</small>
@@ -810,8 +845,7 @@ function saveToken(sid, tok) { try { const t = getTokens(); t[sid] = tok; localS
   saveToken(m[1], m[2]);
   history.replaceState(null, "", location.pathname);
   addEventListener("load", () => {
-    const say = document.getElementById("say");
-    if (say) say.textContent = `Welcome back. This browser now has your owner key for ${m[1].replace(/_/g, ".")}. Paste your link to open your install card.`;
+    sayNow(`Welcome back. This browser now has your owner key for ${m[1].replace(/_/g, ".")}. Paste your link to open your install card.`);
   });
 })();
 const siteIdOf = url => { try { return new URL(url).host.toLowerCase().replace(/^www\./, "").replace(/[^a-z0-9_\-]/g, "_"); } catch { return ""; } };
@@ -877,33 +911,67 @@ const skins = [
 
 /* ---------- hero: one business at a time ---------- */
 let paused = false, typing = false;
+/* the little website in the hero, and its chat */
+function renderWin(st, instant) {
+  const body = $("hBody");
+  const apply = () => {
+    $("hUrl").textContent = st.url; $("hTitle").textContent = st.title; $("hTag").textContent = st.tag;
+    $("hRows").innerHTML = st.rows.slice(0, 4).map(([a, b]) => `<div><span>${a}</span><em>${b}</em></div>`).join("");
+    $("hcName").textContent = st.title;
+  };
+  if (calm || instant) return apply();
+  body.classList.add("swap"); setTimeout(() => { apply(); body.classList.remove("swap"); }, 300);
+}
+let chatRun = 0;
+async function playChat(q, a, chip) {
+  const run = ++chatRun, qEl = $("hcQ"), say = $("say"), dots = $("hcDots"), ch = $("hcChip");
+  [qEl, say, ch].forEach(e => e.classList.remove("on")); dots.classList.remove("on");
+  if (calm) { qEl.textContent = q; say.textContent = a; ch.textContent = chip; [qEl, say].forEach(e => e.classList.add("on")); if (chip) ch.classList.add("on"); return; }
+  await sleep(420); if (run !== chatRun) return;
+  qEl.textContent = ""; qEl.classList.add("on");
+  for (const c of q) { qEl.textContent += c; await sleep(24); if (run !== chatRun) return; }
+  await sleep(250); dots.classList.add("on");
+  await sleep(750); if (run !== chatRun) return;
+  dots.classList.remove("on"); say.textContent = ""; say.classList.add("on");
+  for (const wd of a.split(" ")) { say.textContent += (say.textContent ? " " : "") + wd; await sleep(55); if (run !== chatRun) return; }
+  if (chip) { await sleep(200); ch.textContent = chip; ch.classList.add("on"); }
+}
+// for the setup flow: say something right away, no typing
+function sayNow(text) {
+  chatRun++;
+  $("hcQ").classList.remove("on"); $("hcDots").classList.remove("on"); $("hcChip").classList.remove("on");
+  const say = $("say"); say.textContent = text; say.classList.add("on");
+}
 function setSkin(k) {
   root.style.setProperty("--skin", k.c);
   root.style.setProperty("--skin-light", k.l);
-  const w = $("word"), say = $("say");
+  const w = $("word");
   w.classList.add("out");
   setTimeout(() => { w.textContent = k.word; w.classList.remove("out"); }, calm ? 0 : 350);
   showIcon(k.icon);
-  say.textContent = k.say; say.classList.remove("pop"); void say.offsetWidth; say.classList.add("pop");
+  renderWin(k.st); playChat(k.st.q, k.say, k.st.chip);
 }
 showIcon("coffee");
+renderWin(skins[0].st, true);
 
 const SAY2_RED = "#CB263B";
 function showSay2() {
   root.style.setProperty("--skin", SAY2_RED);
   root.style.setProperty("--skin-light", "#D9B8BC");
-  const w = $("word"), say = $("say");
+  const w = $("word");
   w.classList.add("out");
   setTimeout(() => { w.textContent = "own"; w.classList.remove("out"); }, calm ? 0 : 350);
   seal.classList.remove("mono-on"); seal.classList.add("logo-on");
-  say.textContent = "Hi, I'm say2. Paste your link and I'll get to work.";
-  say.classList.remove("pop"); void say.offsetWidth; say.classList.add("pop");
+  renderWin({ url: "yourbusiness.com", title: "Your business", tag: "Your hours, menus, prices and fine print",
+    rows: [["Menu", "…"], ["Hours", "…"], ["Prices", "…"], ["Booking", "…"]] });
+  playChat("Who answers my customers at 11 pm?", "I do. I'm say2. Paste your link and I'll get to work.", "");
 }
 
 /* ---------- story: the mock site follows the same business ---------- */
 const stage = $("stage"), mini = $("mini"), counter = $("counter"), mock = $("mock");
 $("dots").innerHTML = skins.map(() => "<i></i>").join("");
-let storyVisible = false;
+let storyVisible = false, storyIdx = 0;
+function nextStory() { storyIdx = (storyIdx + 1) % skins.length; setMock(storyIdx, true); }
 function setMock(i, animate) {
   const k = skins[i], st = k.st;
   const apply = () => {
@@ -936,22 +1004,32 @@ if (!calm) setInterval(() => {
   const still = paused || typing;                       // never swap under someone who is typing
   if (i === -1) { if (!still) showSay2(); return; }
   if (!still) setSkin(skins[i]);
-  if (!storyVisible) setMock(i, false);                  // 4. the story only changes business while it is off screen
-}, 5000);
+}, 7000);   // long enough to read each answer
 
 let countTimer = null;
-const io = new IntersectionObserver(entries => {
-  for (const en of entries) {
-    if (!en.isIntersecting) continue;
-    const step = en.target.dataset.step;
-    document.querySelectorAll(".beats article").forEach(a => a.classList.toggle("on", a === en.target));
-    stage.className = "stage s" + step;
-    mood(mini, step === "1" ? "thinking" : step === "3" ? "happy" : null);
-    clearInterval(countTimer);
-    if (step === "1") { let n = 0; countTimer = setInterval(() => { n = Math.min(n + 3, 42); counter.textContent = `Reading pages… ${n}`; }, 120); }
-  }
-}, { rootMargin: "-45% 0px -45% 0px" });
-document.querySelectorAll(".beats article").forEach(a => io.observe(a));
+function showStep(n) {
+  stage.className = "stage s" + n;
+  mood(mini, n === 1 ? "thinking" : n === 3 ? "happy" : null);
+  clearInterval(countTimer);
+  if (n === 1) { let c = 0; countTimer = setInterval(() => { c = Math.min(c + 3, 42); counter.textContent = `Reading pages… ${c}`; }, 40); }
+}
+// one loop per business: reading 2.6 s, PDF 2.6 s, answer 4.8 s (10 s), six businesses in a minute
+const STEP_MS = { 1: 2600, 2: 2600, 3: 4800 };
+let storyN = 0, storyFirst = true, storyTimer = null;
+function storyTick() {
+  if (!storyVisible || document.hidden) { storyTimer = setTimeout(storyTick, 600); return; }   // wait until it is seen
+  storyN = storyN % 3 + 1;
+  if (storyN === 1 && !storyFirst) nextStory();
+  storyFirst = false;
+  showStep(storyN);
+  storyTimer = setTimeout(storyTick, STEP_MS[storyN]);
+}
+if (calm) showStep(3); else storyTick();
+// the text on the right lights up as you scroll; it never changes the animation on the left
+const beatIO = new IntersectionObserver(es => es.forEach(en => {
+  if (en.isIntersecting) document.querySelectorAll(".beats article").forEach(a => a.classList.toggle("on", a === en.target));
+}), { rootMargin: "-45% 0px -45% 0px" });
+document.querySelectorAll(".beats article").forEach(a => beatIO.observe(a));
 
 $("again").onclick = () => {
   if (window.say2Lenis) say2Lenis.scrollTo(0, { duration: 1.4 }); else scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" });
@@ -1115,7 +1193,7 @@ const friendly = (r, d) => (r && r.status < 500 && typeof d.detail === "string")
 function resetGo() { $("go").disabled = false; $("go").textContent = "Hire my assistant"; paused = false; }
 function fail(msg) {
   rule(); note("VOID"); note(msg);
-  mood(seal, "sad"); $("say").textContent = "Locked out. Try another link?";
+  mood(seal, "sad"); sayNow("Locked out. Try another link?");
   resetGo();
 }
 
@@ -1133,7 +1211,7 @@ $("f").addEventListener("submit", async e => {
   const body = { url, token: getTokens()[siteIdOf(url)] || undefined };
 
   paused = true; mood(seal, "thinking");
-  $("say").textContent = "Reading your site. All of it.";
+  sayNow("Reading your site. All of it.");
   $("go").disabled = true; $("go").textContent = "Reading…";
   receipt.textContent = ""; $("printer").classList.add("on"); $("install").classList.remove("on");
   const head = document.createElement("div"); head.className = "r-head r-note";
@@ -1185,7 +1263,7 @@ $("f").addEventListener("submit", async e => {
   $("word").textContent = realName ? (/s$/i.test(realName) ? realName + "’" : realName + "’s") : "own";
   showMono((realName || "say2").charAt(0).toUpperCase());
   mood(seal, "happy");
-  $("say").textContent = token ? `Hired. I'm the new front desk at ${name}.` : `${name} already has me. Say hi in the corner.`;
+  sayNow(token ? `Hired. I'm the new front desk at ${name}.` : `${name} already has me. Say hi in the corner.`);
 
   rule();
   await sleep(200); line("BUSINESS", name.toUpperCase());
